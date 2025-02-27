@@ -1,0 +1,112 @@
+{
+  "mens_clothes": [
+    {
+      "product_name": "Classic White Shirt",
+      "image_url": "https://randomuser.me/api/portraits/women/2.jpg",
+      "price": 1499,
+      "discount_price": 999,
+      "colors": [
+        "White",
+        "Blue",
+        "Black"
+      ]
+    },
+    {
+      "product_name": "Slim Fit Jeans",
+      "image_url": "https://example.com/images/slim-fit-jeans.png",
+      "price": 1999,
+      "discount_price": 1499,
+      "colors": [
+        "Blue",
+        "Black",
+        "Gray"
+      ]
+    },
+    {
+      "product_name": "Casual Polo T-Shirt",
+      "image_url": "https://example.com/images/casual-polo-tshirt.png",
+      "price": 1299,
+      "discount_price": 899,
+      "colors": [
+        "Red",
+        "White",
+        "Navy Blue"
+      ]
+    },
+    {
+      "product_name": "Formal Blazer",
+      "image_url": "https://example.com/images/formal-blazer.png",
+      "price": 4999,
+      "discount_price": 3999,
+      "colors": [
+        "Black",
+        "Navy Blue",
+        "Gray"
+      ]
+    },
+    {
+      "product_name": "Chino Pants",
+      "image_url": "https://example.com/images/chino-pants.png",
+      "price": 1799,
+      "discount_price": 1399,
+      "colors": [
+        "Beige",
+        "Olive Green",
+        "Navy"
+      ]
+    },
+    {
+      "product_name": "Hooded Sweatshirt",
+      "image_url": "https://example.com/images/hooded-sweatshirt.png",
+      "price": 2499,
+      "discount_price": 1999,
+      "colors": [
+        "Black",
+        "Gray",
+        "Maroon"
+      ]
+    },
+    {
+      "product_name": "Leather Jacket",
+      "image_url": "https://example.com/images/leather-jacket.png",
+      "price": 7999,
+      "discount_price": 5999,
+      "colors": [
+        "Black",
+        "Brown"
+      ]
+    },
+    {
+      "product_name": "Cotton Shorts",
+      "image_url": "https://example.com/images/cotton-shorts.png",
+      "price": 999,
+      "discount_price": 799,
+      "colors": [
+        "Khaki",
+        "Blue",
+        "Gray"
+      ]
+    },
+    {
+      "product_name": "Running Shoes",
+      "image_url": "https://example.com/images/running-shoes.png",
+      "price": 2999,
+      "discount_price": 2499,
+      "colors": [
+        "Black",
+        "White",
+        "Red"
+      ]
+    },
+    {
+      "product_name": "Denim Jacket",
+      "image_url": "https://example.com/images/denim-jacket.png",
+      "price": 3499,
+      "discount_price": 2799,
+      "colors": [
+        "Blue",
+        "Black"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Slim Fit Jeans",
+      "description": "Premium quality slim fit jeans made with stretchable denim fabric, perfect for casual and formal wear.",
+      "images": [
+        "https://example.com/images/slim-fit-jeans-front.png",
+        "https://example.com/images/slim-fit-jeans-back.png",
+        "https://example.com/images/slim-fit-jeans-side.png"
+      ],
+      "price": 1499,
+      "discountPrice": 1299,
+      "availableColors": ["Blue", "Black", "Grey"],
+      "availableSizes": ["S", "M", "L", "XL", "XXL"],
+      "gender": "Men",
+      "brand": "Levi's"
+    },
+    {
+      "id": 2,
+      "name": "Casual Shirt",
+      "description": "Cotton casual shirt with a breathable fabric, ideal for everyday comfort and style.",
+      "images": [
+        "https://example.com/images/casual-shirt-front.png",
+        "https://example.com/images/casual-shirt-back.png"
+      ],
+      "price": 999,
+      "discountPrice": 799,
+      "availableColors": ["White", "Black", "Navy"],
+      "availableSizes": ["M", "L", "XL"],
+      "gender": "Men",
+      "brand": "Zara"
+    },
+    {
+      "id": 3,
+      "name": "Leather Jacket",
+      "description": "Genuine leather biker jacket with a soft inner lining, perfect for a stylish winter look.",
+      "images": [
+        "https://example.com/images/leather-jacket-front.png",
+        "https://example.com/images/leather-jacket-side.png",
+        "https://example.com/images/leather-jacket-back.png"
+      ],
+      "price": 3999,
+      "discountPrice": 3499,
+      "availableColors": ["Black", "Brown"],
+      "availableSizes": ["M", "L", "XL", "XXL"],
+      "gender": "Men",
+      "brand": "H&M"
+    },
+    {
+      "id": 4,
+      "name": "Sneakers",
+      "description": "Stylish and comfortable sneakers made with breathable material and cushioned soles.",
+      "images": [
+        "https://example.com/images/sneakers-top.png",
+        "https://example.com/images/sneakers-side.png",
+        "https://example.com/images/sneakers-bottom.png"
+      ],
+      "price": 1999,
+      "discountPrice": 1799,
+      "availableColors": ["White", "Black", "Red"],
+      "availableSizes": ["7", "8", "9", "10", "11"],
+      "gender": "Men",
+      "brand": "Nike"
+    }
+  ]
+}

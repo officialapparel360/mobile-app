@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "profile_image": "https://randomuser.me/api/portraits/men/1.jpg",
+    "last_message": "Hey! How are you?",
+    "is_read": true,
+    "timestamp": "2025-02-24T10:15:30Z"
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "profile_image": "https://randomuser.me/api/portraits/women/2.jpg",
+    "last_message": "Can we reschedule our meeting?",
+    "is_read": false,
+    "timestamp": "2025-02-24T09:45:12Z"
+  },
+  {
+    "id": 3,
+    "name": "Michael Johnson",
+    "profile_image": "https://randomuser.me/api/portraits/men/3.jpg",
+    "last_message": "Sure, I'll send the details.",
+    "is_read": true,
+    "timestamp": "2025-02-24T08:30:45Z"
+  },
+  {
+    "id": 4,
+    "name": "Emily Davis",
+    "profile_image": "https://randomuser.me/api/portraits/women/4.jpg",
+    "last_message": "Thanks for the update!",
+    "is_read": false,
+    "timestamp": "2025-02-24T07:50:20Z"
+  },
+  {
+    "id": 5,
+    "name": "David Wilson",
+    "profile_image": "https://randomuser.me/api/portraits/men/5.jpg",
+    "last_message": "Let's catch up later.",
+    "is_read": true,
+    "timestamp": "2025-02-23T18:15:55Z"
+  },
+  {
+    "id": 6,
+    "name": "Sophia Brown",
+    "profile_image": "https://randomuser.me/api/portraits/women/6.jpg",
+    "last_message": "I'll call you back soon.",
+    "is_read": false,
+    "timestamp": "2025-02-23T17:40:30Z"
+  }
+]
