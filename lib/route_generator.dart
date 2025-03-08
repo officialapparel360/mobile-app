@@ -3,6 +3,9 @@ import 'package:apparel_360/presentation/screens/catelog.dart';
 import 'package:apparel_360/presentation/screens/authentication/login_screen.dart';
 import 'package:apparel_360/presentation/screens/dashboard/chat-component/chat_screen.dart';
 import 'package:apparel_360/presentation/screens/dashboard/home-component/home_screen.dart';
+import 'package:apparel_360/presentation/screens/catelog/catelog.dart';
+import 'package:apparel_360/presentation/screens/login.dart';
+import 'package:apparel_360/presentation/screens/otp.dart';
 import 'package:apparel_360/routes.dart';
 import 'package:flutter/cupertino.dart';
 

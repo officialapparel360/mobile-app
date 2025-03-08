@@ -8,7 +8,15 @@ import 'package:apparel_360/presentation/screens/dashboard/home-component/home_s
 import 'package:apparel_360/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import '../../core/app_style/app_color.dart';
+import '../../core/network/repository.dart';
+import '../../core/utils/app_constant.dart';
+import '../../data/prefernce/shared_preference.dart';
+import '../component/button_control/ButtonControl.dart';
+import '../component/button_control/button_proprty.dart';
 import 'package:http/http.dart' as http;
+
+import 'dashboard/dashboard.dart';
 
 class OtpScreen extends StatefulWidget {
   final String otp;
@@ -37,7 +45,6 @@ class _OtpScreenState extends State<OtpScreen> {
   void _verifyOtp() {
     String enteredOtp = _otpController.text;
     if (enteredOtp.length == 6) {
-      // Perform OTP verification
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("OTP Entered: $enteredOtp")),
       );
@@ -120,10 +127,16 @@ class _OtpScreenState extends State<OtpScreen> {
     });
 
     if (data["type"] == "success") {
-      if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-            context, Routes.homeScreen, (route) => false);
-      }
+      await SharedPrefHelper.saveToken("your_auth_token_here");
+      await SharedPrefHelper.setLoginStatus(true);
+      bool isLoggedIn = await SharedPrefHelper.getLoginStatus();
+      print("Is Logged In: $isLoggedIn");
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Dashboard(),
+        ),
+      );
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

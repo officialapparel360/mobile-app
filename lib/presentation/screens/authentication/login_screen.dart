@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'package:apparel_360/presentation/screens/authentication/otp_screen.dart';
 import 'package:flutter/material.dart';
-import '../../../core/app_style/app_color.dart';
-import '../../../core/network/base_client.dart';
-import '../../../core/network/repository.dart';
-import '../../../core/utils/app_constant.dart';
-import '../../../routes.dart';
-import '../../component/button_control/ButtonControl.dart';
-import '../../component/button_control/button_proprty.dart';
-import '../../component/textbox_control/text_field_widget.dart';
-import '../../component/textbox_control/textbox_property.dart';
+import '../../core/app_style/app_color.dart';
+import '../../core/contents/assets_path.dart';
+import '../../core/network/base_client.dart';
+import '../../core/network/repository.dart';
+import '../../core/utils/app_constant.dart';
+import '../../routes.dart';
+import '../component/button_control/ButtonControl.dart';
+import '../component/button_control/button_proprty.dart';
+import '../component/textbox_control/text_field_widget.dart';
+import '../component/textbox_control/textbox_property.dart';
 import 'package:http/http.dart' as http;
 // import 'package:fluttertoast/fluttertoast.dart';
 
@@ -42,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
-              "assets/images/login_img.png",
+              AssetsPath.loginImage,
             ),
             Padding(
               padding: const EdgeInsets.all(24.0),
