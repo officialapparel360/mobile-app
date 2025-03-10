@@ -1,18 +1,17 @@
 import 'dart:convert';
-
-import 'package:apparel_360/presentation/screens/otp.dart';
+import 'package:apparel_360/presentation/screens/authentication/otp_screen.dart';
 import 'package:flutter/material.dart';
-import '../../core/app_style/app_color.dart';
-import '../../core/network/base_client.dart';
-import '../../core/network/repository.dart';
-import '../../core/utils/app_constant.dart';
-import '../../routes.dart';
-import '../component/button_control/ButtonControl.dart';
-import '../component/button_control/button_proprty.dart';
-import '../component/textbox_control/text_field_widget.dart';
-import '../component/textbox_control/textbox_property.dart';
+import '../../../core/app_style/app_color.dart';
+import '../../../core/network/base_client.dart';
+import '../../../core/network/repository.dart';
+import '../../../core/utils/app_constant.dart';
+import '../../../routes.dart';
+import '../../component/button_control/ButtonControl.dart';
+import '../../component/button_control/button_proprty.dart';
+import '../../component/textbox_control/text_field_widget.dart';
+import '../../component/textbox_control/textbox_property.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -93,9 +92,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       RegExp(r'^[6-9]\d{9}$').hasMatch(_phoneControl.text)) {
                     postLoginData(_phoneControl.text, "12345678");
                   } else {
-                    Fluttertoast.showToast(
-                      msg: "Enter a valid 10-digit mobile number",
-                    );
+                    // Fluttertoast.showToast(
+                    //   msg: "Enter a valid 10-digit mobile number",
+                    // );
                   }
                 },
                 textPadding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -135,12 +134,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (data["type"] == "success") {
       var otp = data['data']['otp'];
       var number = data['data']['mobileNo'];
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OtpScreen(number: mobileNo, otp: otp),
-        ),
-      );
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtpScreen(number: mobileNo, otp: otp),
+          ),
+        );
+      }
     }
   }
 }

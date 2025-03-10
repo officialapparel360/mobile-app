@@ -32,8 +32,8 @@ dependencies:
     sdk: flutter
   pinput: ^2.2.31
   http: ^1.3.0
-  fluttertoast: ^8.2.12
-
+  fluttertoast:
+  flutter_bloc: ^9.1.0
 
 
 

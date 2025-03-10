@@ -1,15 +1,14 @@
+import 'package:apparel_360/core/app_style/app_color.dart';
 import 'package:apparel_360/core/network/base_client.dart';
+import 'package:apparel_360/core/network/repository.dart';
+import 'package:apparel_360/core/utils/app_constant.dart';
+import 'package:apparel_360/presentation/component/button_control/ButtonControl.dart';
+import 'package:apparel_360/presentation/component/button_control/button_proprty.dart';
+import 'package:apparel_360/presentation/screens/dashboard/home-component/home_screen.dart';
+import 'package:apparel_360/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
-import '../../core/app_style/app_color.dart';
-import '../../core/network/base_client.dart';
-import '../../core/network/repository.dart';
-import '../../core/utils/app_constant.dart';
-import '../component/button_control/ButtonControl.dart';
-import '../component/button_control/button_proprty.dart';
 import 'package:http/http.dart' as http;
-
-import 'dashboard.dart';
 
 class OtpScreen extends StatefulWidget {
   final String otp;
@@ -121,16 +120,16 @@ class _OtpScreenState extends State<OtpScreen> {
     });
 
     if (data["type"] == "success") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Dashboard(),
-        ),
-      );
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, Routes.homeScreen, (route) => false);
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(data["message"])),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data["message"])),
+        );
+      }
     }
   }
 }
