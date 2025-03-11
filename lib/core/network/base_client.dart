@@ -4,7 +4,7 @@ import 'package:apparel_360/core/network/network_call_interface.dart';
 import 'package:http/http.dart' as http;
 
 class BaseClient implements NetworkCallInterface {
-  final String baseUrl = "http://apparels360.in/api/Account";
+  final String baseUrl = "http://apparels360.in/api/";
 
   @override
   Future<dynamic> get(String url) async {

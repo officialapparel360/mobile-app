@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:apparel_360/core/app_style/app_color.dart';
+import 'package:apparel_360/core/services/signalR_service.dart';
+import 'package:apparel_360/core/utils/show_custom_toast.dart';
 import 'package:apparel_360/presentation/screens/catelog.dart';
 import 'package:apparel_360/presentation/screens/dashboard/chat-component/chat_screen.dart';
 import 'package:apparel_360/presentation/screens/authentication/login_screen.dart';
@@ -99,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return InkWell(
                         highlightColor: Colors.transparent,
                         onTap: () {
-                          Navigator.pushNamed(context, Routes.chatScreen);
+                          _navigateToChatScreen();
                         },
                         child: Card(
                           child: Padding(
@@ -156,5 +158,18 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _navigateToChatScreen() async {
+    SignalRService signalRService = SignalRService();
+    bool isConnected = await signalRService.connect();
+    if (mounted) {
+      if (isConnected) {
+        Navigator.pushNamed(context, Routes.chatScreen);
+      } else {
+        CustomToast.showToast(
+            context, 'Something went wrong while making connecting to user!');
+      }
+    }
   }
 }

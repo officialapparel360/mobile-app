@@ -1,3 +1,4 @@
+import 'package:apparel_360/core/services/service_locator.dart';
 import 'package:apparel_360/presentation/screens/dashboard/chat-component/chat_bloc.dart';
 import 'package:apparel_360/presentation/screens/dashboard/home-component/home_screen.dart';
 import 'package:apparel_360/presentation/screens/authentication/login_screen.dart';
@@ -6,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key}) {
+    setupLocator();
+  }
 
   // This widget is the root of your application.
   @override
