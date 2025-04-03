@@ -4,7 +4,7 @@ import 'package:signalr_netcore/hub_connection_builder.dart';
 class SignalRService {
   late HubConnection _hubConnection;
 
-  SignalRService() {
+  SignalRService({required Function(dynamic) onMessageReceived}) {
     _hubConnection = HubConnectionBuilder()
         .withUrl('http://apparels360.in/chat-hub')
         .build();
@@ -18,11 +18,11 @@ class SignalRService {
     });
 
     _hubConnection.on("Users", (message) {
- //     onUsersUpdate(message);
+      //     onUsersUpdate(message);
     });
 
     _hubConnection.on("Messages", (message) {
- //     onMessageReceived(message);
+      onMessageReceived(message);
     });
   }
 
