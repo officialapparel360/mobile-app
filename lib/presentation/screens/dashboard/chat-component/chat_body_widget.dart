@@ -8,24 +8,25 @@ class ChatBodyWidget extends StatelessWidget {
     this.copyMessage,
     required this.messages,
     required this.scrollController,
+    required this.senderUserID,
   });
 
   StringToVoidCallBack? copyMessage;
   final List<Map<String, String>> messages;
   final ScrollController scrollController;
+  final String senderUserID;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColor.primaryColor
-          .withValues(alpha: 0.4, blue: 1, green: 0.8, red: 0.9),
+      color: AppColor.white,
       child: ListView.builder(
         controller: scrollController, // Attach scroll controller
         padding: const EdgeInsets.all(10),
         itemCount: messages.length,
         itemBuilder: (context, index) {
           final message = messages[index];
-          final isMe = message["sender"] == "me";
+          final isMe = messages[index]["sender"] == senderUserID;
 
           return Align(
             alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -57,7 +58,7 @@ class ChatBodyWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: isMe
-                      ? AppColor.primaryColor.withValues(alpha: 0.7)
+                      ? AppColor.primaryColor
                       : Colors.grey[300],
                   borderRadius: BorderRadius.circular(12),
                 ),

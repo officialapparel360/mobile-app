@@ -16,6 +16,16 @@ class NetworkRepository {
 
   Future<dynamic> sendMessage(Map<String, dynamic> sendMessageRequest) async {
     return await networkCallInterface.post(
-        '/Chats/SendMessage/SendMessage', sendMessageRequest);
+        'Chats/SendMessage', sendMessageRequest);
+  }
+
+  Future<dynamic> getUserList(Map<String, dynamic> userId) async {
+    return await networkCallInterface.get('Account/GetUsers', data: userId);
+  }
+
+  Future<dynamic> fetchMessages(
+      Map<String, dynamic> fetchMessagesRequest) async {
+    return await networkCallInterface.get('Chats/GetChats',
+        data: fetchMessagesRequest);
   }
 }

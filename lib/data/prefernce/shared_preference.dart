@@ -5,13 +5,13 @@ class SharedPrefHelper {
   static const String _isLoggedInKey = "is_logged_in";
 
   // Save Token
-  static Future<void> saveToken(String token) async {
+  static Future<void> saveUserId(String token) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
   }
 
   // Get Token
-  static Future<String?> getToken() async {
+  static Future<String?> getUserId() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_tokenKey);
   }

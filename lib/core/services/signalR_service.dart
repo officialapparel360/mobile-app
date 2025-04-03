@@ -16,6 +16,14 @@ class SignalRService {
     _hubConnection.on("ReceiveMessage", (message) {
       print("New message received: ${message?[0]}");
     });
+
+    _hubConnection.on("Users", (message) {
+ //     onUsersUpdate(message);
+    });
+
+    _hubConnection.on("Messages", (message) {
+ //     onMessageReceived(message);
+    });
   }
 
   Future<bool> connect() async {

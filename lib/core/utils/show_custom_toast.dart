@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CustomToast {
   static void showToast(BuildContext context, String message) {
     Fluttertoast.showToast(
-      msg: "Custom Styled Toast!",
+      msg: message,
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.CENTER,
       backgroundColor: Colors.blueAccent,

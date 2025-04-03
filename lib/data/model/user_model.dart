@@ -5,37 +5,30 @@ List<UserDetail> userDetailFromJson(String str) => List<UserDetail>.from(json.de
 String userDetailToJson(List<UserDetail> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class UserDetail {
-  int? id;
+  String? mappedUserId;
   String? name;
-  String? profileImage;
-  String? lastMessage;
-  bool? isRead;
-  DateTime? timestamp;
+  String? mobileNo;
+  String? status;
+
 
   UserDetail({
-    this.id,
+    this.mappedUserId,
     this.name,
-    this.profileImage,
-    this.lastMessage,
-    this.isRead,
-    this.timestamp,
+    this.mobileNo,
+    this.status,
   });
 
   factory UserDetail.fromJson(Map<String, dynamic> json) => UserDetail(
-    id: json["id"],
+    mappedUserId: json["mappedUserId"],
     name: json["name"],
-    profileImage: json["profile_image"],
-    lastMessage: json["last_message"],
-    isRead: json["is_read"],
-    timestamp: json["timestamp"] == null ? null : DateTime.parse(json["timestamp"]),
-  );
+    status: json["status"],
+    mobileNo: json["mobileNo"],
+     );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "mappedUserId": mappedUserId,
     "name": name,
-    "profile_image": profileImage,
-    "last_message": lastMessage,
-    "is_read": isRead,
-    "timestamp": timestamp?.toIso8601String(),
+    "status": status,
+    "mobileNo": mobileNo,
   };
 }

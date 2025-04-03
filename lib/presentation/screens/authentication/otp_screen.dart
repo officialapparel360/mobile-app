@@ -4,19 +4,14 @@ import 'package:apparel_360/core/network/repository.dart';
 import 'package:apparel_360/core/utils/app_constant.dart';
 import 'package:apparel_360/presentation/component/button_control/ButtonControl.dart';
 import 'package:apparel_360/presentation/component/button_control/button_proprty.dart';
-import 'package:apparel_360/presentation/screens/dashboard/home-component/home_screen.dart';
 import 'package:apparel_360/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
-import '../../core/app_style/app_color.dart';
-import '../../core/network/repository.dart';
-import '../../core/utils/app_constant.dart';
-import '../../data/prefernce/shared_preference.dart';
-import '../component/button_control/ButtonControl.dart';
-import '../component/button_control/button_proprty.dart';
 import 'package:http/http.dart' as http;
 
-import 'dashboard/dashboard.dart';
+import '../../../data/prefernce/shared_preference.dart';
+import '../dashboard/home-component/home_screen.dart';
+import '../dashboard/tab_bar.dart';
 
 class OtpScreen extends StatefulWidget {
   final String otp;
@@ -127,11 +122,12 @@ class _OtpScreenState extends State<OtpScreen> {
     });
 
     if (data["type"] == "success") {
-      await SharedPrefHelper.saveToken("your_auth_token_here");
+      await SharedPrefHelper.saveUserId(data["data"]["userID"]);
       await SharedPrefHelper.setLoginStatus(true);
       bool isLoggedIn = await SharedPrefHelper.getLoginStatus();
-      print("Is Logged In: $isLoggedIn");
-      Navigator.push(
+      var userId = await SharedPrefHelper.getUserId();
+      print("Is Logged In: $isLoggedIn === $userId");
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => Dashboard(),

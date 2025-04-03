@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:apparel_360/core/app_style/app_color.dart';
-import 'package:apparel_360/presentation/screens/dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/contents/assets_path.dart';
 import '../../data/prefernce/shared_preference.dart';
-import 'login.dart';
+import 'authentication/login_screen.dart';
+import 'dashboard/tab_bar.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
