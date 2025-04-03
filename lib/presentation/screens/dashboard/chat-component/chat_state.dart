@@ -14,13 +14,18 @@ class ChatLoadSuccessState extends ChatState {
 
 class ChatLoadFailState extends ChatState {}
 
-class FetchMessagesState extends ChatState {
-  List<ChatModel> messages;
+class FetchMessagesSuccessState extends ChatState {
+  List<Map<String, String>> messages;
 
-  FetchMessagesState(this.messages);
+  FetchMessagesSuccessState({required this.messages});
 }
 
-class SendMessagesState extends ChatState {}
+class SendMessagesSuccessState extends ChatState {}
 
 class ChatLoadingState extends ChatState {}
 
+class SignalRConnectionSuccess extends ChatState {
+  bool isSignalRConnected;
+
+  SignalRConnectionSuccess({required this.isSignalRConnected});
+}

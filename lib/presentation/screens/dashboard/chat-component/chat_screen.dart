@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/services/signalR_service.dart';
-
 class ChatScreen extends StatefulWidget {
   final String receiverUserID;
   final String senderUserID;
@@ -22,117 +20,113 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-  final List<Map<String, String>> _messages = [];
+
   final ScrollController _scrollController = ScrollController();
   late ChatBloc bloc;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  initialiseEvents() {
     bloc = ChatBloc(ChatInitialState());
-    _receiveMessage(widget.receiverUserID, widget.senderUserID);
+    bloc.add(InitialiseSignalREvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ChatBloc(ChatInitialState())
-        ..add(
-          FetchMessagesEvent(
-            receiverUserID: widget.receiverUserID,
-            senderUserID: widget.senderUserID,
-          ),
-        ),
-      child: Scaffold(
-        body: SafeArea(
-          child: BlocBuilder<ChatBloc, ChatState>(
-            builder: (context, state) {
-              if (state is FetchMessagesState) {
-                _messages.clear();
-              } else if (state is SendMessagesState) {
-                _messageController.clear();
-                _receiveMessage(widget.receiverUserID, widget.senderUserID);
-              } else if (state is ChatLoadFailState) {
-                //             showCustomToast(context, "Failed to load messages");
-              }
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const ChatTopViewWidget(),
-                  Expanded(
-                      child: _buildChatBody(context, state)),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(28.0),
-                                border: Border.all(
-                                    color: AppColor.black500, width: 1.0)),
-                            child: TextField(
-                              controller: _messageController,
-                              decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: AppConstant.typeAMessage,
-                                  contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 15)),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColor.primaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              icon: Icon(Icons.send, color: AppColor.white),
-                              onPressed: () => _sendMessage(
-                                  widget.receiverUserID, widget.senderUserID),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
+    return Scaffold(
+      body: SafeArea(
+        child: BlocConsumer<ChatBloc, ChatState>(
+          listener: (context, state) {
+            if (state is SignalRConnectionSuccess) {
+              bloc.add(FetchMessagesEvent(
+                receiverUserID: widget.receiverUserID,
+                senderUserID: widget.senderUserID,
+              ));
+            } else if (state is SendMessagesSuccessState ||
+                state is FetchMessagesSuccessState) {
+              _scrollToBottom();
+            }
+          },
+          builder: (context, state) {
+            if (state is ChatLoadingState) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is SendMessagesSuccessState ||
+                state is FetchMessagesSuccessState) {
+              return buildBody();
+            } else if (state is ChatLoadFailState) {
+              return Text('Error');
+              //             showCustomToast(context, "Failed to load messages");
+            } else {
+              return Container();
+            }
+          },
         ),
       ),
     );
   }
 
-
-  void _sendMessage(String receiverUserID, String senderUserID) async{
-    if (_messageController.text.trim().isNotEmpty) {
-      SignalRService signalRService = SignalRService();
-      bool isConnected = await signalRService.connect();
-      if(isConnected){
-        context.read<ChatBloc>().add(
-          SendMessageEvent(
-            chatMessage: _messageController.text,
-            receiverUserID: receiverUserID,
-            senderUserID: senderUserID,
+  Widget buildBody() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const ChatTopViewWidget(),
+        Expanded(
+            child: ChatBodyWidget(
+          messages: bloc.userMessages,
+          scrollController: _scrollController,
+          senderUserID: widget.senderUserID,
+        )),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(28.0),
+                      border: Border.all(color: AppColor.black500, width: 1.0)),
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: AppConstant.typeAMessage,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 15)),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColor.primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.send, color: AppColor.white),
+                    onPressed: () => _sendMessage(
+                        widget.receiverUserID, widget.senderUserID),
+                  ),
+                ),
+              ),
+            ],
           ),
-        );
-      }
-    }
-    _messageController.clear();
+        ),
+      ],
+    );
   }
 
-  void _receiveMessage(String receiverUserID, String senderUserID) {
-    context.read<ChatBloc>().add(
-      FetchMessagesEvent(
+  void _sendMessage(String receiverUserID, String senderUserID) async {
+    if (_messageController.text.trim().isNotEmpty) {
+      bloc.add(SendMessageEvent(
+        chatMessage: _messageController.text,
         receiverUserID: receiverUserID,
         senderUserID: senderUserID,
-      ),
-    );
-    _scrollToBottom();
+      ));
+    }
+    _messageController.clear();
   }
 
   void _copyToClipboard(String message) {
@@ -144,42 +138,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _scrollToBottom() {
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 200),
           curve: Curves.easeOut,
         );
       }
     });
   }
-
-  Widget _buildChatBody(BuildContext context, ChatState state) {
-    if (state is FetchMessagesState) {
-      _messages.clear(); // Clear previous messages
-      _messages.addAll(state.messages.map((chat) => {
-        "text": chat.chatMessage ?? "",
-        "sender": chat.senderUserID??""
-      }));
-    } else if (state is SendMessagesState) {
-      _messageController.clear();
-      context.read<ChatBloc>().add(
-        FetchMessagesEvent(
-          receiverUserID: widget.receiverUserID,
-          senderUserID: widget.senderUserID,
-        ),
-      );
-    } else if (state is ChatLoadFailState) {
-      return Center(child: Text("Failed to load messages"));
-    }
-    return ChatBodyWidget(
-      messages: _messages,
-      scrollController: _scrollController,
-      senderUserID: widget.senderUserID,
-    );
-  }
-
 }
-
-

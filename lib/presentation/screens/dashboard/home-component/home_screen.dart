@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                 child: BlocBuilder<ChatBloc, ChatState>(
                   builder: (context, state) {
-                    if(state is ChatLoadSuccessState){
+                    if (state is ChatLoadSuccessState) {
                       _userData = state.userDetail;
                     }
                     return ListView.builder(
@@ -115,18 +115,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _navigateToChatScreen(String receiverId, String senderId) async {
-    SignalRService signalRService = SignalRService();
-    bool isConnected = await signalRService.connect();
     if (mounted) {
-      if (isConnected) {
-        Navigator.pushNamed(context, Routes.chatScreen, arguments: {
-          'receiverId': receiverId,
-          'senderId': senderId,
-        });
-      } else {
-        CustomToast.showToast(
-            context, 'Something went wrong while making connecting to user!');
-      }
+      Navigator.pushNamed(context, Routes.chatScreen, arguments: {
+        'receiverId': receiverId,
+        'senderId': senderId,
+      });
     }
   }
 

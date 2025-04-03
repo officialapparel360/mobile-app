@@ -28,6 +28,11 @@ class FetchMessagesEvent extends ChatEvent {
   String receiverUserID;
 
   FetchMessagesEvent(
-      {required this.receiverUserID,
-        required this.senderUserID});
+      {required this.receiverUserID, required this.senderUserID});
+}
+
+class InitialiseSignalREvent extends ChatEvent {}
+
+class UpdateReceiveMessageEvent extends ChatEvent{
+
 }

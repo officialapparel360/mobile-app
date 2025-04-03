@@ -57,9 +57,7 @@ class ChatBodyWidget extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 5),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isMe
-                      ? AppColor.primaryColor
-                      : Colors.grey[300],
+                  color: isMe ? AppColor.primaryColor : Colors.grey[300],
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

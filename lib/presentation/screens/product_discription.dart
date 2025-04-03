@@ -1,7 +1,6 @@
 import 'package:apparel_360/core/app_style/app_color.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart'
-    '';
+import 'package:flutter/material.dart';
 
 class ProductDescription extends StatefulWidget {
   @override
@@ -99,7 +98,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 16,top: 12,right: 16),
+            padding: const EdgeInsets.only(left: 16, top: 12, right: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -114,10 +113,9 @@ class _ProductDescriptionState extends State<ProductDescription> {
                       decoration: BoxDecoration(
                         color: AppColor.transparent,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                            color: Colors.black, width: 0.5),
+                        border: Border.all(color: Colors.black, width: 0.5),
                       ),
-                      child:const Center(
+                      child: const Center(
                         child: Text(
                           "S",
                           style: TextStyle(
@@ -135,10 +133,9 @@ class _ProductDescriptionState extends State<ProductDescription> {
                       decoration: BoxDecoration(
                         color: AppColor.transparent,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                            color: Colors.black, width: 0.5),
+                        border: Border.all(color: Colors.black, width: 0.5),
                       ),
-                      child:const Center(
+                      child: const Center(
                         child: Text(
                           "M",
                           style: TextStyle(
@@ -148,7 +145,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                         ),
                       ),
                     ),
-                    const SizedBox(width : 8),
+                    const SizedBox(width: 8),
                     Container(
                       margin: const EdgeInsets.only(right: 4),
                       width: 32,
@@ -156,10 +153,9 @@ class _ProductDescriptionState extends State<ProductDescription> {
                       decoration: BoxDecoration(
                         color: AppColor.transparent,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                            color: Colors.black, width: 0.5),
+                        border: Border.all(color: Colors.black, width: 0.5),
                       ),
-                      child:const Center(
+                      child: const Center(
                         child: Text(
                           "L",
                           style: TextStyle(
@@ -176,9 +172,12 @@ class _ProductDescriptionState extends State<ProductDescription> {
                     Text(
                       "Color",
                       style: TextStyle(
-                          color: AppColor.black900, fontWeight: FontWeight.w900),
+                          color: AppColor.black900,
+                          fontWeight: FontWeight.w900),
                     ),
-                   const SizedBox(height: 8,),
+                    const SizedBox(
+                      height: 8,
+                    ),
                     Row(
                       children: [
                         Container(
@@ -188,8 +187,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                           decoration: BoxDecoration(
                             color: AppColor.primaryColor,
                             shape: BoxShape.circle,
-                            border: Border.all(
-                                color: Colors.black, width: 0.5),
+                            border: Border.all(color: Colors.black, width: 0.5),
                           ),
                         ),
                         Container(
@@ -199,8 +197,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                           decoration: BoxDecoration(
                             color: AppColor.black900,
                             shape: BoxShape.circle,
-                            border: Border.all(
-                                color: Colors.black, width: 0.5),
+                            border: Border.all(color: Colors.black, width: 0.5),
                           ),
                         ),
                         Container(
@@ -210,8 +207,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                           decoration: BoxDecoration(
                             color: AppColor.white,
                             shape: BoxShape.circle,
-                            border: Border.all(
-                                color: Colors.black, width: 0.5),
+                            border: Border.all(color: Colors.black, width: 0.5),
                           ),
                         ),
                       ],
