@@ -2,6 +2,7 @@ import 'package:apparel_360/core/network/repository.dart';
 import 'package:apparel_360/core/services/service_locator.dart';
 import 'package:apparel_360/core/services/signalR_service.dart';
 import 'package:apparel_360/data/model/chat_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../data/model/user_model.dart';
 
@@ -12,6 +13,8 @@ part 'chat_state.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final NetworkRepository _networkRepository = getIt<NetworkRepository>();
   final List<Map<String, String>> userMessages = [];
+
+  late SignalRService signalRService;
 
   ChatBloc(super.initialState) {
     on<LoadedUserList>((event, emit) async {
@@ -27,7 +30,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
 
     on<SendMessageEvent>((event, emit) async {
-      emit(ChatLoadingState());
       try {
         final data = await _networkRepository.sendMessage({
           "senderUserID": event.senderUserID,
@@ -36,17 +38,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         });
 
         if (data["type"] == "success") {
-          // emit(SendMessagesSuccessState());
+          userMessages.add({
+            "text": event.chatMessage,
+            "sender": event.senderUserID,
+          });
+
+          emit(SendMessagesSuccessState());
+
+          emit(FetchMessagesSuccessState(messages: List.from(userMessages)));
         } else {
           emit(ChatLoadFailState());
         }
       } catch (e) {
+        print("Error sending message: $e");
         emit(ChatLoadFailState());
       }
     });
 
-    on<FetchMessagesEvent>((event, emit) {
-      _fetchMessage(
+
+    on<FetchMessagesEvent>((event, emit) async {
+      await _fetchMessage(
           receiverUserID: event.receiverUserID,
           senderUserID: event.senderUserID,
           emit: emit);

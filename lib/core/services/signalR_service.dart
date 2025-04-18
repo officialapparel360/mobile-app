@@ -8,14 +8,10 @@ class SignalRService {
     _hubConnection = HubConnectionBuilder()
         .withUrl('http://apparels360.in/chat-hub')
         .build();
-
-    _hubConnection.onclose(
-      ({error}) => print('error while closing signalR'),
-    );
-
-    _hubConnection.on("ReceiveMessage", (message) {
-      print("New message received: ${message?[0]}");
-    });
+    //
+    // _hubConnection.on("ReceiveMessage", (message) {
+    //   print("New message received: ${message?[0]}");
+    // });
 
     _hubConnection.on("Users", (message) {
       //     onUsersUpdate(message);
@@ -24,6 +20,10 @@ class SignalRService {
     _hubConnection.on("Messages", (message) {
       onMessageReceived(message);
     });
+
+    _hubConnection.onclose(
+          ({error}) => print('error while closing signalR'),
+    );
   }
 
   Future<bool> connect() async {

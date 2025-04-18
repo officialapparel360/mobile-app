@@ -1,6 +1,9 @@
 import 'package:apparel_360/presentation/screens/catelog/catelog.dart';
 import 'package:flutter/material.dart';
 
+import '../../../data/prefernce/shared_preference.dart';
+import '../authentication/login_screen.dart';
+import '../catelog/clearance.dart';
 import 'home-component/home_screen.dart';
 
 class Dashboard extends StatefulWidget {
@@ -43,6 +46,34 @@ class _DashboardState extends State<Dashboard>
               // Add your onPressed code here!
             },
           ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) async {
+              // Handle menu item selection
+              if (value == 'Logout') {
+                await SharedPrefHelper.setLoginStatus(false);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LoginScreen()),
+                );
+              } else if (value == 'About Us') {
+                // Add about us functionality
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: 'Logout',
+                  child: Text('Logout'),
+                ),
+                // const PopupMenuItem<String>(
+                //   value: 'About Us',
+                //   child: Text('About Us'),
+                // ),
+              ];
+            },
+          ),
         ],
         bottom: TabBar(
           controller: _tabController,
@@ -64,7 +95,7 @@ class _DashboardState extends State<Dashboard>
         children: const <Widget>[
           Center(child: HomeScreen()),
           Center(child: Catelog()),
-          Center(child: Catelog()),
+          Center(child: ClearanceCategory()),
         ],
       ),
     );

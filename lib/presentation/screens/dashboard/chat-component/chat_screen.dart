@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/signalR_service.dart';
+
 class ChatScreen extends StatefulWidget {
   final String receiverUserID;
   final String senderUserID;
@@ -20,18 +22,18 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-
   final ScrollController _scrollController = ScrollController();
   late ChatBloc bloc;
 
   @override
   void initState() {
     super.initState();
+    initialiseEvents();
   }
 
   initialiseEvents() {
     bloc = ChatBloc(ChatInitialState());
-    bloc.add(InitialiseSignalREvent());
+    bloc.add(InitialiseSignalREvent(senderUserID: widget.senderUserID));
   }
 
   @override
@@ -39,25 +41,23 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       body: SafeArea(
         child: BlocConsumer<ChatBloc, ChatState>(
+          bloc: bloc,
           listener: (context, state) {
             if (state is SignalRConnectionSuccess) {
               bloc.add(FetchMessagesEvent(
                 receiverUserID: widget.receiverUserID,
                 senderUserID: widget.senderUserID,
               ));
-            } else if (state is SendMessagesSuccessState ||
-                state is FetchMessagesSuccessState) {
+            } else if (state is FetchMessagesSuccessState) {
               _scrollToBottom();
             }
           },
           builder: (context, state) {
-            if (state is ChatLoadingState) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is SendMessagesSuccessState ||
+           if (state is SendMessagesSuccessState ||
                 state is FetchMessagesSuccessState) {
               return buildBody();
             } else if (state is ChatLoadFailState) {
-              return Text('Error');
+              return const Text('Error');
               //             showCustomToast(context, "Failed to load messages");
             } else {
               return Container();

@@ -50,7 +50,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (state is ChatLoadSuccessState) {
                       _userData = state.userDetail;
                     }
-                    return ListView.builder(
+                    if (_userData.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          "No sealer is assigned yet.",
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                      );
+                    }
+                    return  ListView.builder(
                         padding: EdgeInsets.zero,
                         itemCount: _userData.length,
                         itemBuilder: (context, index) {

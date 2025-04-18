@@ -38,6 +38,7 @@ dependencies:
   fluttertoast: ^8.2.12
   carousel_slider: ^5.0.0
   shared_preferences: ^2.3.3
+  connectivity_plus: ^6.1.3
 
 
 

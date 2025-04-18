@@ -6,9 +6,11 @@ import 'package:apparel_360/presentation/component/button_control/ButtonControl.
 import 'package:apparel_360/presentation/component/button_control/button_proprty.dart';
 import 'package:apparel_360/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../core/network/network_utils.dart';
 import '../../../data/prefernce/shared_preference.dart';
 import '../dashboard/home-component/home_screen.dart';
 import '../dashboard/tab_bar.dart';
@@ -116,29 +118,35 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   Future<void> verifyOtp(String otp) async {
-    final data = await repository.otpVerify({
-      "mobileNo": widget.number,
-      "otp": otp,
-    });
+    bool isInternetAvailable = await ConnectionUtil().checkInternetStatus();
+    if(isInternetAvailable){
+      final data = await repository.otpVerify({
+        "mobileNo": widget.number,
+        "otp": otp,
+      });
 
-    if (data["type"] == "success") {
-      await SharedPrefHelper.saveUserId(data["data"]["userID"]);
-      await SharedPrefHelper.setLoginStatus(true);
-      bool isLoggedIn = await SharedPrefHelper.getLoginStatus();
-      var userId = await SharedPrefHelper.getUserId();
-      print("Is Logged In: $isLoggedIn === $userId");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Dashboard(),
-        ),
-      );
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data["message"])),
+      if (data["type"] == "success") {
+        await SharedPrefHelper.saveUserId(data["data"]["userID"]);
+        await SharedPrefHelper.setLoginStatus(true);
+        bool isLoggedIn = await SharedPrefHelper.getLoginStatus();
+        var userId = await SharedPrefHelper.getUserId();
+        print("Is Logged In: $isLoggedIn === $userId");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Dashboard(),
+          ),
         );
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(data["message"])),
+          );
+        }
       }
+    }else{
+      Fluttertoast.showToast(msg: "Please check your internet connection");
     }
+
   }
 }

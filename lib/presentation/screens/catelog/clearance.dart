@@ -1,18 +1,19 @@
-import 'package:apparel_360/data/model/product_model.dart';
+import 'dart:convert';
+import 'package:apparel_360/core/app_style/app_color.dart';
 import 'package:apparel_360/presentation/screens/catelog/bloc/catelog_bloc.dart';
 import 'package:apparel_360/presentation/screens/product_discription.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Catelog extends StatefulWidget {
-  const Catelog({super.key});
+class ClearanceCategory extends StatefulWidget {
+  const ClearanceCategory({super.key});
 
   @override
-  State<Catelog> createState() => _CatelogState();
+  State<ClearanceCategory> createState() => _ClearanceCategoryState();
 }
 
-class _CatelogState extends State<Catelog> {
+class _ClearanceCategoryState extends State<ClearanceCategory> {
   List<dynamic> catelog = [];
   late CatelogBloc bloc;
   @override
@@ -38,7 +39,7 @@ class _CatelogState extends State<Catelog> {
           }
           if (state is CatelogLoadedState) {
             for (var item in state.data) {
-              if (item.isNew == 1) {
+              if (item.isNew == 0) {
                 catelog.add(item);
               }
             }

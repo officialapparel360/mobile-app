@@ -6,7 +6,7 @@ abstract class CatelogState {}
 class CatelogInitial extends CatelogState {}
 
 class CatelogLoadedState extends CatelogState{
-  List<MensClothe> clothes;
+  List<Datum> data;
 
-  CatelogLoadedState(this.clothes);
+  CatelogLoadedState(this.data);
 }

@@ -28,4 +28,8 @@ class NetworkRepository {
     return await networkCallInterface.get('Chats/GetChats',
         data: fetchMessagesRequest);
   }
+
+  Future<dynamic> getProductList() async {
+    return await networkCallInterface.get('Product/GetProductList');
+  }
 }

@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ChatBloc(ChatInitialState()),
         ),
         BlocProvider(
-          create: (context) => CatelogBloc(),
+          create: (context) => CatelogBloc(CatelogInitial()),
         ),
       ],
       child: MaterialApp(

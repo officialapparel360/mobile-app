@@ -7,7 +7,7 @@ class BaseClient implements NetworkCallInterface {
   final String baseUrl = "http://apparels360.in/api/";
 
   @override
-  Future<dynamic> get(String url,  {Map<String, dynamic>? data}) async {
+  Future<dynamic> get(String url, {Map<String, dynamic>? data}) async {
     try {
       Uri uri = Uri.parse('$baseUrl$url').replace(queryParameters: data);
       var response = await http.get(uri);

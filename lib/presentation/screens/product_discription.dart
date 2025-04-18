@@ -1,22 +1,19 @@
 import 'package:apparel_360/core/app_style/app_color.dart';
+import 'package:apparel_360/data/model/product_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class ProductDescription extends StatefulWidget {
+  final Datum catelog;
+
+  ProductDescription(this.catelog);
+
   @override
   _ProductDescriptionState createState() => _ProductDescriptionState();
 }
 
 class _ProductDescriptionState extends State<ProductDescription> {
   int _currentIndex = 0;
-  final List<String> imageUrls = [
-    'https://media.istockphoto.com/id/2176015166/photo/jeans-pant-isolated-on-transparent-background-png-file.webp?s=1024x1024&w=is&k=20&c=rW0pknlTzis9f-aaG4WPkNnD1ZUJXHY8zwfZzP9aq9k=',
-    'https://media.istockphoto.com/id/2176015166/photo/jeans-pant-isolated-on-transparent-background-png-file.webp?s=1024x1024&w=is&k=20&c=rW0pknlTzis9f-aaG4WPkNnD1ZUJXHY8zwfZzP9aq9k=',
-    'https://media.istockphoto.com/id/2176015166/photo/jeans-pant-isolated-on-transparent-background-png-file.webp?s=1024x1024&w=is&k=20&c=rW0pknlTzis9f-aaG4WPkNnD1ZUJXHY8zwfZzP9aq9k=',
-    'https://media.istockphoto.com/id/2176015166/photo/jeans-pant-isolated-on-transparent-background-png-file.webp?s=1024x1024&w=is&k=20&c=rW0pknlTzis9f-aaG4WPkNnD1ZUJXHY8zwfZzP9aq9k=',
-    'https://media.istockphoto.com/id/2176015166/photo/jeans-pant-isolated-on-transparent-background-png-file.webp?s=1024x1024&w=is&k=20&c=rW0pknlTzis9f-aaG4WPkNnD1ZUJXHY8zwfZzP9aq9k=',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,13 +33,17 @@ class _ProductDescriptionState extends State<ProductDescription> {
                 });
               },
             ),
-            items: imageUrls.map((url) {
-              return Hero(
-                tag: "category_image",
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(url,
-                      fit: BoxFit.cover, width: double.infinity),
+            items:widget.catelog.pictures!.map((url) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  url,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Image.asset('assets/images/placeholder.jpg',
+                          width: double.infinity,
+                          fit: BoxFit.cover),
                 ),
               );
             }).toList(),
@@ -50,7 +51,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: imageUrls.asMap().entries.map((entry) {
+            children: widget.catelog.pictures!.asMap().entries.map((entry) {
               return Container(
                 width: 8.0,
                 height: 8.0,
@@ -68,7 +69,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
             child: Column(
               children: [
                 Text(
-                  "Product Name",
+                  widget.catelog.name??"",
                   style: TextStyle(
                       color: AppColor.black900,
                       fontSize: 24,
@@ -78,35 +79,48 @@ class _ProductDescriptionState extends State<ProductDescription> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 16, top: 12),
+            padding: const EdgeInsets.only(left: 16, top: 8),
             child: Text(
-              "Skinny-but-not-too-skinny, roomy-but-not-too-roomy, the slim fit sits at the sweet spot between skinny jeans and straight leg denim. From your hip to your ankle, it’s a closer, more tailored fit to your body but with enough room to move. It’s modern, it’s polished",
-              style: TextStyle(
+              widget.catelog.description??"",
+               style: TextStyle(
                   color: AppColor.black700,
                   fontSize: 14,
                   fontWeight: FontWeight.w500),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 16, top: 32),
-            child: Text(
-              "Size Available",
-              style: TextStyle(
-                  color: AppColor.black700,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500),
+            padding: const EdgeInsets.only(left: 16, top: 32,right: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Size Available",
+                  style: TextStyle(
+                      color: AppColor.black700,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  "Color",
+                  style: TextStyle(
+                      color: AppColor.black700,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 12, right: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
+                  children: widget.catelog.size!.map<Widget>((size) {
+                    return Container(
                       margin: const EdgeInsets.only(right: 4),
                       width: 32,
                       height: 32,
@@ -115,104 +129,31 @@ class _ProductDescriptionState extends State<ProductDescription> {
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.black, width: 0.5),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          "S",
-                          style: TextStyle(
+                          size.toString(),
+                          style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      margin: const EdgeInsets.only(right: 4),
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: AppColor.transparent,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black, width: 0.5),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "M",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      margin: const EdgeInsets.only(right: 4),
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: AppColor.transparent,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black, width: 0.5),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "L",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+                    );
+                  }).toList(),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      "Color",
-                      style: TextStyle(
-                          color: AppColor.black900,
-                          fontWeight: FontWeight.w900),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 4),
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: AppColor.primaryColor,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 0.5),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(right: 4),
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: AppColor.black900,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 0.5),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(right: 4),
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: AppColor.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 0.5),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
+                Row(
+                  children: widget.catelog.colors!.map((color){
+                   return Container(
+                      margin: const EdgeInsets.only(right: 4),
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: AppColor.primaryColor,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black, width: 0.5),
+                      ),
+                    );
+                  }).toList(),
                 )
               ],
             ),
