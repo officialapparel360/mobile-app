@@ -1,4 +1,5 @@
 import 'package:apparel_360/core/app_style/app_color.dart';
+import 'package:apparel_360/core/services/signalRCubit.dart';
 import 'package:apparel_360/core/utils/app_constant.dart';
 import 'package:apparel_360/presentation/screens/dashboard/chat-component/chat_bloc.dart';
 import 'package:apparel_360/presentation/screens/dashboard/chat-component/chat_body_widget.dart';
@@ -24,6 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   late ChatBloc bloc;
+  late SignalRCubit signalRCubit;
 
   @override
   void initState() {
@@ -32,7 +34,9 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   initialiseEvents() {
-    bloc = ChatBloc(ChatInitialState());
+    signalRCubit = context.read<SignalRCubit>();
+    signalRCubit.initConnection();
+    bloc = ChatBloc(ChatInitialState(), signalRCubit: signalRCubit);
     bloc.add(InitialiseSignalREvent(senderUserID: widget.senderUserID));
   }
 
@@ -53,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
             }
           },
           builder: (context, state) {
-           if (state is SendMessagesSuccessState ||
+            if (state is SendMessagesSuccessState ||
                 state is FetchMessagesSuccessState) {
               return buildBody();
             } else if (state is ChatLoadFailState) {

@@ -4,6 +4,7 @@ import 'package:apparel_360/core/services/signalR_service.dart';
 import 'package:apparel_360/data/model/chat_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/services/signalRCubit.dart';
 import '../../../../data/model/user_model.dart';
 
 part 'chat_event.dart';
@@ -14,9 +15,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final NetworkRepository _networkRepository = getIt<NetworkRepository>();
   final List<Map<String, String>> userMessages = [];
 
-  late SignalRService signalRService;
+  final SignalRCubit signalRCubit;
 
-  ChatBloc(super.initialState) {
+  ChatBloc(super.initialState, {required this.signalRCubit}) {
     on<LoadedUserList>((event, emit) async {
       final senderId = event.senderId;
       Map<String, dynamic> userIdMap = {"userId": senderId};
@@ -54,7 +55,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         emit(ChatLoadFailState());
       }
     });
-
 
     on<FetchMessagesEvent>((event, emit) async {
       await _fetchMessage(
