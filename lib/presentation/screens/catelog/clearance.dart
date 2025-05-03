@@ -39,7 +39,7 @@ class _ClearanceCategoryState extends State<ClearanceCategory> {
           }
           if (state is CatelogLoadedState) {
             for (var item in state.data) {
-              if (item.isNew == 0) {
+              if (item.isNew == 1) {
                 catelog.add(item);
               }
             }

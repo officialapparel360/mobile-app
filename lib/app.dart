@@ -5,6 +5,7 @@ import 'package:apparel_360/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/services/service_locator.dart';
+import 'core/services/signalRCubit.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ChatBloc(ChatInitialState()),
+          create: (context) => ChatBloc(ChatInitialState(), signalRCubit: context.read<SignalRCubit>()),
         ),
         BlocProvider(
           create: (context) => CatelogBloc(CatelogInitial()),

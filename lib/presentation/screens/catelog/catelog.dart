@@ -38,7 +38,7 @@ class _CatelogState extends State<Catelog> {
           }
           if (state is CatelogLoadedState) {
             for (var item in state.data) {
-              if (item.isNew == 1) {
+              if (item.isNew == 0) {
                 catelog.add(item);
               }
             }
@@ -75,7 +75,7 @@ class _CatelogState extends State<Catelog> {
                             borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(10)),
                             child: Image.network(
-                              product.pictures[0],
+                              product.pictures[1],
                               width: double.infinity,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
@@ -96,40 +96,47 @@ class _CatelogState extends State<Catelog> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 2),
+                              Text(
+                                product.shortDetails,
+                                style: TextStyle(fontWeight: FontWeight.w500,color: Colors.black38),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              // Row(
+                              //   children: product.colors.map<Widget>((color) {
+                              //     return Container(
+                              //       margin: const EdgeInsets.only(right: 4),
+                              //       width: 10,
+                              //       height: 10,
+                              //       decoration: BoxDecoration(
+                              //         color: getColorFromName(color),
+                              //         shape: BoxShape.circle,
+                              //         border: Border.all(
+                              //             color: Colors.black, width: 0.5),
+                              //       ),
+                              //     );
+                              //   }).toList(),
+                              // ),
+                              const SizedBox(height: 2),
                               Row(
                                 children: [
                                   Text(
-                                    "\$${product.discount}",
+                                    "\$${product.price}",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.green),
                                   ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "\$${product.price}",
-                                    style: const TextStyle(
-                                        decoration: TextDecoration.lineThrough,
-                                        color: Colors.red),
-                                  ),
+                                  // const SizedBox(width: 5),
+                                  // Text(
+                                  //   "\$${product.price}",
+                                  //   style: const TextStyle(
+                                  //       decoration: TextDecoration.lineThrough,
+                                  //       color: Colors.red),
+                                  // ),
                                 ],
                               ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: product.colors.map<Widget>((color) {
-                                  return Container(
-                                    margin: const EdgeInsets.only(right: 4),
-                                    width: 10,
-                                    height: 10,
-                                    decoration: BoxDecoration(
-                                      color: getColorFromName(color),
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.black, width: 0.5),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
+
                             ],
                           ),
                         ),

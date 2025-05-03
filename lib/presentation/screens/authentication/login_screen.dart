@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         AppConstant.termAndCondition,
                         style: TextStyle(
-                            color: AppColor.primaryColor,
+                            color: AppColor.black900,
                             fontWeight: FontWeight.w600,
                             fontSize: 14),
                       ),
