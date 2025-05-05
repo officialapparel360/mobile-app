@@ -1,8 +1,5 @@
 import 'dart:async';
-
-import 'package:apparel_360/core/app_style/app_color.dart';
 import 'package:flutter/material.dart';
-
 import '../../core/contents/assets_path.dart';
 import '../../data/prefernce/shared_preference.dart';
 import 'authentication/login_screen.dart';
@@ -34,10 +31,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColor.white,
         body: Center(
           child: Image.asset(
             AssetsPath.logo,
+            height: 40.0,
+            width: 40.0,
           ),
         ));
   }

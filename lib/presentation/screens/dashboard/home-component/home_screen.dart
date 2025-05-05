@@ -46,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                 child: BlocBuilder<ChatBloc, ChatState>(
+                  bloc: bloc,
                   builder: (context, state) {
                     if (state is ChatLoadSuccessState) {
                       _userData = state.userDetail;
@@ -53,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (_userData.isEmpty) {
                       return const Center(
                         child: Text(
-                          "No sealer is assigned yet.",
+                          "No dealer is assigned yet.",
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       );

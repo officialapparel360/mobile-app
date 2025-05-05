@@ -16,6 +16,7 @@ class ClearanceCategory extends StatefulWidget {
 class _ClearanceCategoryState extends State<ClearanceCategory> {
   List<dynamic> catelog = [];
   late CatelogBloc bloc;
+
   @override
   void initState() {
     super.initState();
@@ -26,13 +27,14 @@ class _ClearanceCategoryState extends State<ClearanceCategory> {
     bloc = CatelogBloc(CatelogInitial());
     bloc.add(LoadedCatelogData());
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<CatelogBloc, CatelogState>(
         bloc: bloc,
         builder: (context, state) {
-          if(state is CatelogInitial){
+          if (state is CatelogInitial) {
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -61,7 +63,8 @@ class _ClearanceCategoryState extends State<ClearanceCategory> {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProductDescription(catelog[index]),
+                        builder: (context) =>
+                            ProductDescription(catelog[index]),
                       )),
                   child: Card(
                     elevation: 3,
@@ -75,15 +78,20 @@ class _ClearanceCategoryState extends State<ClearanceCategory> {
                           child: ClipRRect(
                             borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(10)),
-                            child: Image.network(
-                              product.pictures[0],
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Image.asset('assets/images/placeholder.jpg',
-                                      width: double.infinity,
-                                      fit: BoxFit.cover),
-                            ),
+                            child: (product?.pictures != null) &&
+                                   (product?.pictures.isNotEmpty)
+                                ? Image.network(
+                                    product?.pictures[0],
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Image.asset(
+                                                'assets/images/placeholder.jpg',
+                                                width: double.infinity,
+                                                fit: BoxFit.cover),
+                                  )
+                                : Container(),
                           ),
                         ),
                         Padding(
