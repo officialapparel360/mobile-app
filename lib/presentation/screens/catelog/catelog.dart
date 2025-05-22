@@ -122,7 +122,7 @@ class _CatelogState extends State<Catelog> {
                               Row(
                                 children: [
                                   Text(
-                                    "\$${product.price}",
+                                    "₹${product.price}",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.green),

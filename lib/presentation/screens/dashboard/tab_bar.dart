@@ -1,4 +1,5 @@
 import 'package:apparel_360/presentation/screens/catelog/catelog.dart';
+import 'package:apparel_360/presentation/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/prefernce/shared_preference.dart';
@@ -45,23 +46,11 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
               // Add your onPressed code here!
             },
           ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) async {
-              // Handle menu item selection
-              _handleMenuSelection(value);
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                const PopupMenuItem<String>(
-                  value: 'Logout',
-                  child: Text('Logout'),
-                ),
-                // const PopupMenuItem<String>(
-                //   value: 'About Us',
-                //   child: Text('About Us'),
-                // ),
-              ];
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (builder) => ProfileScreen()));
             },
           ),
         ],
@@ -86,42 +75,6 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
           Center(child: HomeScreen()),
           Center(child: Catelog()),
           Center(child: ClearanceCategory()),
-        ],
-      ),
-    );
-  }
-
-  void _handleMenuSelection(String value) async {
-    if (value == 'Logout') {
-      final shouldLogout = await _showLogoutConfirmationDialog();
-      if (shouldLogout != true) return;
-
-      await SharedPrefHelper.setLoginStatus(false);
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
-    } else if (value == 'About Us') {
-      // about us functionality
-    }
-  }
-
-  Future<bool?> _showLogoutConfirmationDialog() {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Logout'),
-          ),
         ],
       ),
     );

@@ -32,4 +32,9 @@ class NetworkRepository {
   Future<dynamic> getProductList() async {
     return await networkCallInterface.get('Product/GetProductList');
   }
+
+  Future<dynamic> getProfileData(Map<String, dynamic> userId) async {
+    return await networkCallInterface.get('Account/GetUserProfileByUserId',
+        data: userId);
+  }
 }

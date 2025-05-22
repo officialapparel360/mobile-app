@@ -14,6 +14,7 @@ class ProductDescription extends StatefulWidget {
 
 class _ProductDescriptionState extends State<ProductDescription> {
   int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,17 +34,17 @@ class _ProductDescriptionState extends State<ProductDescription> {
                 });
               },
             ),
-            items:widget.catelog.pictures!.map((url) {
+            items: widget.catelog.pictures!.map((url) {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
                   url,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      Image.asset('assets/images/placeholder.jpg',
-                          width: double.infinity,
-                          fit: BoxFit.cover),
+                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                      'assets/images/placeholder.jpg',
+                      width: double.infinity,
+                      fit: BoxFit.cover),
                 ),
               );
             }).toList(),
@@ -69,7 +70,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
             child: Column(
               children: [
                 Text(
-                  widget.catelog.name??"",
+                  widget.catelog.name ?? "",
                   style: TextStyle(
                       color: AppColor.black900,
                       fontSize: 24,
@@ -81,82 +82,17 @@ class _ProductDescriptionState extends State<ProductDescription> {
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 8),
             child: Text(
-              widget.catelog.description??"",
-               style: TextStyle(
+              widget.catelog.description ?? "",
+              style: TextStyle(
                   color: AppColor.black700,
                   fontSize: 14,
                   fontWeight: FontWeight.w500),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 16, top: 32,right: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Size Available",
-                  style: TextStyle(
-                      color: AppColor.black700,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  "Color",
-                  style: TextStyle(
-                      color: AppColor.black700,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 12, right: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: widget.catelog.size!.map<Widget>((size) {
-                    return Container(
-                      margin: const EdgeInsets.only(right: 4),
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: AppColor.transparent,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black, width: 0.5),
-                      ),
-                      child: Center(
-                        child: Text(
-                          size.toString(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-                Row(
-                  children: widget.catelog.colors!.map((color){
-                   return Container(
-                      margin: const EdgeInsets.only(right: 4),
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: AppColor.primaryColor,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black, width: 0.5),
-                      ),
-                    );
-                  }).toList(),
-                )
-              ],
-            ),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 14.0),
+            child: Text('₹${widget.catelog.price.toString()}'),
           )
         ],
       ),
