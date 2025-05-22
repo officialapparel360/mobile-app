@@ -1,14 +1,12 @@
 import 'package:apparel_360/presentation/screens/authentication/otp_screen.dart';
 import 'package:apparel_360/presentation/screens/authentication/login_screen.dart';
 import 'package:apparel_360/presentation/screens/dashboard/chat-component/chat_screen.dart';
-import 'package:apparel_360/presentation/screens/dashboard/home-component/home_screen.dart';
 import 'package:apparel_360/presentation/screens/catelog/catelog.dart';
 import 'package:apparel_360/routes.dart';
 import 'package:flutter/cupertino.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
     switch (settings.name) {
       case Routes.loginScreen:
         return PageRouteBuilder(
@@ -42,6 +40,8 @@ class RouteGenerator {
             return ChatScreen(
               receiverUserID: args?['receiverId'] ?? '',
               senderUserID: args?['senderId'] ?? '',
+              mobileNumber: args?['mobileNumber'] ?? '',
+              name: args?['name'] ?? '',
             );
           },
         );

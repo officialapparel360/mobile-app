@@ -11,7 +11,7 @@ class AppConstant {
   static const password = "Password";
   static const email = "Email";
   static const gstNo = "GST No.";
-  static const mobile = "Please Enter Your Valid Mobile Number";
+  static const mobile = "Enter you mobile number to continue";
   static const fullName = "Full name";
   static const termAndCondition =
       "By signing up, you are agree with our Terms & Conditions";

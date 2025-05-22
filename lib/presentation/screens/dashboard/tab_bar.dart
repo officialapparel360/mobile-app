@@ -49,16 +49,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
             icon: const Icon(Icons.more_vert),
             onSelected: (value) async {
               // Handle menu item selection
-              if (value == 'Logout') {
-                await SharedPrefHelper.setLoginStatus(false);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const LoginScreen()),
-                );
-              } else if (value == 'About Us') {
-                // Add about us functionality
-              }
+              _handleMenuSelection(value);
             },
             itemBuilder: (BuildContext context) {
               return [
@@ -95,6 +86,42 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
           Center(child: HomeScreen()),
           Center(child: Catelog()),
           Center(child: ClearanceCategory()),
+        ],
+      ),
+    );
+  }
+
+  void _handleMenuSelection(String value) async {
+    if (value == 'Logout') {
+      final shouldLogout = await _showLogoutConfirmationDialog();
+      if (shouldLogout != true) return;
+
+      await SharedPrefHelper.setLoginStatus(false);
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    } else if (value == 'About Us') {
+      // about us functionality
+    }
+  }
+
+  Future<bool?> _showLogoutConfirmationDialog() {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Logout'),
+          ),
         ],
       ),
     );

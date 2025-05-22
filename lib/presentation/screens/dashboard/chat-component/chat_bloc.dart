@@ -1,10 +1,9 @@
+import 'dart:async';
+
 import 'package:apparel_360/core/network/repository.dart';
 import 'package:apparel_360/core/services/service_locator.dart';
-import 'package:apparel_360/core/services/signalR_service.dart';
 import 'package:apparel_360/data/model/chat_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/services/signalRCubit.dart';
 import '../../../../data/model/user_model.dart';
 
 part 'chat_event.dart';
@@ -15,10 +14,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final NetworkRepository _networkRepository = getIt<NetworkRepository>();
   final List<Map<String, String>> userMessages = [];
 
-  final SignalRCubit signalRCubit;
+  final _signalRMessageController = StreamController<dynamic>();
 
-  ChatBloc(super.initialState, {required this.signalRCubit}) {
+  Stream get messageStream => _signalRMessageController.stream;
+
+  StreamSink get messageSink => _signalRMessageController.sink;
+
+  ChatBloc(super.initialState) {
     on<LoadedUserList>((event, emit) async {
+      emit(UserListLoadingState());
       final senderId = event.senderId;
       Map<String, dynamic> userIdMap = {"userId": senderId};
       final data = await _networkRepository.getUserList(userIdMap);
@@ -63,11 +67,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           emit: emit);
     });
 
-    on<InitialiseSignalREvent>((event, emit) async {
-      emit(ChatLoadingState());
-      bool isConnected = await connectSignalR();
-      emit(SignalRConnectionSuccess(isSignalRConnected: isConnected));
-    });
+    // on<InitialiseSignalREvent>((event, emit) async {
+    //   emit(ChatLoadingState());
+    //   bool isConnected = await connectSignalR();
+    //   emit(SignalRConnectionSuccess(isSignalRConnected: isConnected));
+    // });
 
     on<UpdateReceiveMessageEvent>((event, emit) {
       emit(SendMessagesSuccessState());
@@ -104,11 +108,5 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   onMessageReceived(dynamic messages) {
     // update the userMessagesList
     add(UpdateReceiveMessageEvent());
-  }
-
-  Future<bool> connectSignalR() async {
-    SignalRService signalRService =
-        SignalRService(onMessageReceived: onMessageReceived);
-    return await signalRService.connect();
   }
 }

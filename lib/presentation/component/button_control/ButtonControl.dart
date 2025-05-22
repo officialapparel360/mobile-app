@@ -2,44 +2,34 @@ import 'package:flutter/material.dart';
 
 import 'button_proprty.dart';
 
-
-class ButtonControl extends StatefulWidget {
-  ButtonControl({
-    Key? key,
+class ButtonControl extends StatelessWidget {
+  const ButtonControl({
+    super.key,
     required this.buttonProperty,
     required this.onTap,
     this.textPadding,
-  }) : super(key: key);
+  });
 
-  ButtonProperty buttonProperty;
-  VoidCallback onTap;
-  EdgeInsetsGeometry? textPadding;
+  final ButtonProperty buttonProperty;
+  final VoidCallback onTap;
+  final EdgeInsetsGeometry? textPadding;
 
-  @override
-  State<ButtonControl> createState() => _ButtonControlState();
-}
-
-class _ButtonControlState extends State<ButtonControl> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      // widget.buttonProperty.buttonSize?.height != 0.0
-      //      ? widget.buttonProperty.buttonSize?.height
-      //      : null,
-      width: widget.buttonProperty.buttonSize?.width,
+      width: buttonProperty.buttonSize?.width,
+      height: buttonProperty.buttonSize?.height,
       child: ElevatedButton(
-        onPressed: widget.onTap,
+        onPressed: onTap,
         style: ElevatedButton.styleFrom(
-            backgroundColor: widget.buttonProperty.backgroundColor,
+            backgroundColor: buttonProperty.backgroundColor,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24.0))),
+                borderRadius: BorderRadius.circular(20.0))),
         child: Padding(
-          padding: widget.textPadding ?? EdgeInsets.zero,
+          padding: textPadding ?? EdgeInsets.zero,
           child: Text(
-            widget.buttonProperty.text ?? '',
-            style: TextStyle(
-              color: widget.buttonProperty.textColor,
-            ),
+            buttonProperty.text ?? '',
+            style: TextStyle(color: buttonProperty.textColor, fontSize: 16.0),
           ),
         ),
       ),

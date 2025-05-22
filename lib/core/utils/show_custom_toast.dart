@@ -1,14 +1,11 @@
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/material.dart';
 
 class CustomToast {
-  static void showToast(BuildContext context, String message) {
+  static void showToast(String message) {
     Fluttertoast.showToast(
       msg: message,
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.blueAccent,
-      textColor: Colors.white,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
       fontSize: 18.0,
     );
   }

@@ -24,6 +24,8 @@ class SendMessagesSuccessState extends ChatState {}
 
 class ChatLoadingState extends ChatState {}
 
+class UserListLoadingState extends ChatState {}
+
 class SignalRConnectionSuccess extends ChatState {
   bool isSignalRConnected;
 

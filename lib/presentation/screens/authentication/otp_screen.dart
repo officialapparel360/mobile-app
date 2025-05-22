@@ -4,22 +4,18 @@ import 'package:apparel_360/core/network/repository.dart';
 import 'package:apparel_360/core/utils/app_constant.dart';
 import 'package:apparel_360/presentation/component/button_control/ButtonControl.dart';
 import 'package:apparel_360/presentation/component/button_control/button_proprty.dart';
-import 'package:apparel_360/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
-import 'package:http/http.dart' as http;
-
-import '../../../core/network/network_utils.dart';
-import '../../../data/prefernce/shared_preference.dart';
-import '../dashboard/home-component/home_screen.dart';
-import '../dashboard/tab_bar.dart';
+import 'package:apparel_360/core/network/network_utils.dart';
+import 'package:apparel_360/data/prefernce/shared_preference.dart';
+import 'package:apparel_360/presentation/screens/dashboard/tab_bar.dart';
 
 class OtpScreen extends StatefulWidget {
   final String otp;
   final String number;
 
-  OtpScreen({super.key, required this.number, required this.otp});
+  const OtpScreen({super.key, required this.number, required this.otp});
 
   @override
   _OtpScreenState createState() => _OtpScreenState();
@@ -105,7 +101,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 textPadding: const EdgeInsets.symmetric(vertical: 12.0),
                 buttonProperty: ButtonProperty(
                   backgroundColor: AppColor.primaryColor,
-                  buttonSize: Size(screenSize.width, 0.0),
+                  buttonSize: Size(screenSize.width, 50.0),
                   text: AppConstant.submit,
                   textColor: Colors.white,
                 ),
@@ -119,7 +115,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Future<void> verifyOtp(String otp) async {
     bool isInternetAvailable = await ConnectionUtil().checkInternetStatus();
-    if(isInternetAvailable){
+    if (isInternetAvailable) {
       final data = await repository.otpVerify({
         "mobileNo": widget.number,
         "otp": otp,
@@ -131,11 +127,11 @@ class _OtpScreenState extends State<OtpScreen> {
         bool isLoggedIn = await SharedPrefHelper.getLoginStatus();
         var userId = await SharedPrefHelper.getUserId();
         print("Is Logged In: $isLoggedIn === $userId");
-        Navigator.pushReplacement(
+
+        Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-            builder: (context) => Dashboard(),
-          ),
+          MaterialPageRoute(builder: (builder) => Dashboard()),
+          (route) => false,
         );
       } else {
         if (mounted) {
@@ -144,9 +140,8 @@ class _OtpScreenState extends State<OtpScreen> {
           );
         }
       }
-    }else{
+    } else {
       Fluttertoast.showToast(msg: "Please check your internet connection");
     }
-
   }
 }

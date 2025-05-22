@@ -1,9 +1,5 @@
-import 'dart:convert';
-import 'package:apparel_360/core/services/signalR_service.dart';
-import 'package:apparel_360/core/utils/show_custom_toast.dart';
 import 'package:apparel_360/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/network/base_client.dart';
 import '../../../../core/network/repository.dart';
@@ -28,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     bloc = BlocProvider.of<ChatBloc>(context);
     getUserList();
+    getUserDetail();
   }
 
   void getUserList() async {
@@ -51,7 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (state is ChatLoadSuccessState) {
                       _userData = state.userDetail;
                     }
-                    if (_userData.isEmpty) {
+                    if (state is UserListLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (_userData.isEmpty) {
                       return const Center(
                         child: Text(
                           "No dealer is assigned yet.",
@@ -59,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     }
-                    return  ListView.builder(
+                    return ListView.builder(
                         padding: EdgeInsets.zero,
                         itemCount: _userData.length,
                         itemBuilder: (context, index) {
@@ -67,7 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             highlightColor: Colors.transparent,
                             onTap: () {
                               _navigateToChatScreen(
-                                  _userData[index].mappedUserId, senderId);
+                                  _userData[index].mappedUserId,
+                                  senderId,
+                                  _userData[index].mobileNo,
+                                  _userData[index].name);
                             },
                             child: Card(
                               child: Padding(
@@ -76,8 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     const CircleAvatar(
                                       backgroundImage: NetworkImage(
-                                          "https://randomuser.me/api/portraits/men/1.jpg" ??
-                                              ""),
+                                          "https://randomuser.me/api/portraits/men/1.jpg"),
                                       radius: 30,
                                     ),
                                     const SizedBox(width: 16),
@@ -123,11 +124,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> _navigateToChatScreen(String receiverId, String senderId) async {
+  Future<void> _navigateToChatScreen(String receiverId, String senderId,
+      String mobileNumber, String name) async {
     if (mounted) {
       Navigator.pushNamed(context, Routes.chatScreen, arguments: {
         'receiverId': receiverId,
         'senderId': senderId,
+        'mobileNumber': mobileNumber,
+        'name': name
       });
     }
   }
@@ -141,5 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
       default:
         return Icon(Icons.help, color: Colors.blue, size: 16);
     }
+  }
+
+  getUserDetail() async {
+    var userId = await SharedPrefHelper.getUserId();
+    print('this is your id: ${userId}');
   }
 }

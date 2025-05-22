@@ -5,8 +5,8 @@ class NetworkRepository {
 
   NetworkRepository(this.networkCallInterface);
 
-  Future<dynamic> login(String mobile, String password) async {
-    final body = {"mobileNo": mobile, "password": password};
+  Future<dynamic> login(String mobile) async {
+    final body = {"mobileNo": mobile};
     return await networkCallInterface.post('Account/Login', body);
   }
 

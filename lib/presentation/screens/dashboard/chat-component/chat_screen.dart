@@ -1,11 +1,11 @@
+import 'dart:async';
+
 import 'package:apparel_360/core/app_style/app_color.dart';
-import 'package:apparel_360/core/services/signalRCubit.dart';
 import 'package:apparel_360/core/utils/app_constant.dart';
 import 'package:apparel_360/presentation/screens/dashboard/chat-component/chat_bloc.dart';
 import 'package:apparel_360/presentation/screens/dashboard/chat-component/chat_body_widget.dart';
 import 'package:apparel_360/presentation/screens/dashboard/chat-component/chat_top_view_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/services/signalR_service.dart';
@@ -13,9 +13,16 @@ import '../../../../core/services/signalR_service.dart';
 class ChatScreen extends StatefulWidget {
   final String receiverUserID;
   final String senderUserID;
+  final String name;
+  final String mobileNumber;
 
-  ChatScreen(
-      {super.key, required this.receiverUserID, required this.senderUserID});
+  ChatScreen({
+    super.key,
+    required this.receiverUserID,
+    required this.senderUserID,
+    required this.mobileNumber,
+    required this.name,
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -25,7 +32,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   late ChatBloc bloc;
-  late SignalRCubit signalRCubit;
+  SignalRService signalRService = SignalRService();
+  Timer? _pollingTimer;
 
   @override
   void initState() {
@@ -33,11 +41,31 @@ class _ChatScreenState extends State<ChatScreen> {
     initialiseEvents();
   }
 
-  initialiseEvents() {
-    signalRCubit = context.read<SignalRCubit>();
-    signalRCubit.initConnection();
-    bloc = ChatBloc(ChatInitialState(), signalRCubit: signalRCubit);
-    bloc.add(InitialiseSignalREvent(senderUserID: widget.senderUserID));
+  fetchMessageApi() {
+    bloc.add(FetchMessagesEvent(
+      receiverUserID: widget.receiverUserID,
+      senderUserID: widget.senderUserID,
+    ));
+  }
+
+  Future<void> initialiseEvents() async {
+    bloc = ChatBloc(ChatInitialState());
+    fetchMessageApi();
+    _startPolling();
+  }
+
+  void _startPolling() {
+    _pollingTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      fetchMessageApi();
+    });
+  }
+
+  @override
+  void dispose() {
+    _pollingTimer?.cancel();
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -47,12 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
         child: BlocConsumer<ChatBloc, ChatState>(
           bloc: bloc,
           listener: (context, state) {
-            if (state is SignalRConnectionSuccess) {
-              bloc.add(FetchMessagesEvent(
-                receiverUserID: widget.receiverUserID,
-                senderUserID: widget.senderUserID,
-              ));
-            } else if (state is FetchMessagesSuccessState) {
+            if (state is FetchMessagesSuccessState) {
               _scrollToBottom();
             }
           },
@@ -73,10 +96,18 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget buildBody() {
+    String topDisplayField = '';
+    if (widget.name.isNotEmpty) {
+      topDisplayField = widget.name;
+    } else {
+      topDisplayField = widget.mobileNumber;
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const ChatTopViewWidget(),
+        ChatTopViewWidget(
+          topDisplayField: topDisplayField,
+        ),
         Expanded(
             child: ChatBodyWidget(
           messages: bloc.userMessages,
@@ -131,14 +162,6 @@ class _ChatScreenState extends State<ChatScreen> {
       ));
     }
     _messageController.clear();
-  }
-
-  void _copyToClipboard(String message) {
-    FocusScope.of(context).unfocus(); // Close keyboard
-    Clipboard.setData(ClipboardData(text: message));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Message copied!")),
-    );
   }
 
   void _scrollToBottom() {

@@ -4,37 +4,24 @@ import 'package:signalr_netcore/hub_connection_builder.dart';
 class SignalRService {
   late HubConnection _hubConnection;
 
-  SignalRService({required Function(dynamic) onMessageReceived}) {
-    _hubConnection = HubConnectionBuilder()
-        .withUrl('http://apparels360.in/chat-hub')
-        .build();
-    //
-    // _hubConnection.on("ReceiveMessage", (message) {
-    //   print("New message received: ${message?[0]}");
-    // });
 
-    _hubConnection.on("Users", (message) {
-      //     onUsersUpdate(message);
-    });
-
+  void receiveMessage({required Function(dynamic) onMessageReceived}) {
     _hubConnection.on("Messages", (message) {
       onMessageReceived(message);
     });
-
-    _hubConnection.onclose(
-          ({error}) => print('error while closing signalR'),
-    );
   }
 
   Future<bool> connect() async {
     try {
+      _hubConnection = HubConnectionBuilder()
+          .withUrl('http://apparels360.in/chat-hub')
+          .build();
       await _hubConnection.start();
       if (_hubConnection.state == HubConnectionState.Connected) {
         return true;
       } else {
         return false;
       }
-      print('SignalR connected');
     } catch (e) {
       print('Error is coming while connecting ${e.toString()}');
       return false;

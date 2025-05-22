@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ChatTopViewWidget extends StatelessWidget {
-  const ChatTopViewWidget({super.key});
+  const ChatTopViewWidget({super.key, required this.topDisplayField});
+
+  final String topDisplayField;
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +24,12 @@ class ChatTopViewWidget extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 12.0),
                 child: CircleAvatar(),
               ),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Vishu'),
-                    Text('last seen today at 11:45pm'),
+                    Text(topDisplayField),
                   ],
                 ),
               ),
