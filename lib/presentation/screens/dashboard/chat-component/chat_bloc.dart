@@ -67,14 +67,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           emit: emit);
     });
 
-    // on<InitialiseSignalREvent>((event, emit) async {
-    //   emit(ChatLoadingState());
-    //   bool isConnected = await connectSignalR();
-    //   emit(SignalRConnectionSuccess(isSignalRConnected: isConnected));
-    // });
-
     on<UpdateReceiveMessageEvent>((event, emit) {
       emit(SendMessagesSuccessState());
+    });
+    on<SearchUserListEvent>((event, emit) {
+      emit(SearchUserListState(filteredList: event.filteredData));
     });
   }
 
@@ -92,11 +89,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         List<ChatModel> chatData = (data["data"] as List)
             .map((item) => ChatModel.fromJson(item))
             .toList();
-        print("Message stored successfullyyyy");
         userMessages.clear();
         userMessages.addAll(chatData.map((chat) => {
               "text": chat.chatMessage ?? "",
-              "sender": chat.senderUserID ?? ""
+              "sender": chat.senderUserID ?? "",
+              "messageDate": chat.date ?? ''
             }));
         emit(FetchMessagesSuccessState(messages: userMessages));
       }

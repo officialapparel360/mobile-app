@@ -5,14 +5,14 @@ ProductModel productModelFromJson(String str) => ProductModel.fromJson(json.deco
 String productModelToJson(ProductModel data) => json.encode(data.toJson());
 
 class ProductModel {
-  List<Datum>? data;
+  List<ProductData>? data;
 
   ProductModel({
     this.data,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<ProductData>.from(json["data"]!.map((x) => ProductData.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -20,7 +20,7 @@ class ProductModel {
   };
 }
 
-class Datum {
+class ProductData {
   int? id;
   String? name;
   double? price;
@@ -36,7 +36,7 @@ class Datum {
   List<String>? colors;
   List<String>? size;
 
-  Datum({
+  ProductData({
     this.id,
     this.name,
     this.price,
@@ -53,7 +53,7 @@ class Datum {
     this.size,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory ProductData.fromJson(Map<String, dynamic> json) => ProductData(
     id: json["id"],
     name: json["name"],
     price: json["price"],

@@ -33,9 +33,14 @@ class FetchMessagesEvent extends ChatEvent {
 
 class InitialiseSignalREvent extends ChatEvent {
   String senderUserID;
+
   InitialiseSignalREvent({required this.senderUserID});
 }
 
-class UpdateReceiveMessageEvent extends ChatEvent{
+class UpdateReceiveMessageEvent extends ChatEvent {}
 
+class SearchUserListEvent extends ChatEvent {
+  final List<dynamic> filteredData;
+
+  SearchUserListEvent({required this.filteredData});
 }

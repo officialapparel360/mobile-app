@@ -1,9 +1,7 @@
-import 'dart:convert';
-import 'package:apparel_360/core/app_style/app_color.dart';
 import 'package:apparel_360/presentation/screens/catelog/bloc/catelog_bloc.dart';
-import 'package:apparel_360/presentation/screens/product_discription.dart';
+import 'package:apparel_360/presentation/screens/product-description/product_description.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ClearanceCategory extends StatefulWidget {
@@ -30,21 +28,22 @@ class _ClearanceCategoryState extends State<ClearanceCategory> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      body: BlocBuilder<CatelogBloc, CatelogState>(
+      body: BlocConsumer<CatelogBloc, CatelogState>(
         bloc: bloc,
-        builder: (context, state) {
-          if (state is CatelogInitial) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+        listener: (context, state) {
           if (state is CatelogLoadedState) {
             for (var item in state.data) {
               if (item.isNew == 1) {
                 catelog.add(item);
               }
             }
+          }
+        },
+        builder: (context, state) {
+          if (state is CatelogInitial) {
+            return const Center(child: CircularProgressIndicator());
           }
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -53,7 +52,7 @@ class _ClearanceCategoryState extends State<ClearanceCategory> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,
-                childAspectRatio: 0.7,
+                childAspectRatio: 0.47,
               ),
               itemCount: catelog.length,
               itemBuilder: (context, index) {
@@ -74,22 +73,22 @@ class _ClearanceCategoryState extends State<ClearanceCategory> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
+                        SizedBox(
+                          height: screenSize.width * 0.7,
                           child: ClipRRect(
                             borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(10)),
                             child: (product?.pictures != null) &&
-                                   (product?.pictures.isNotEmpty)
-                                ? Image.network(
-                                    product?.pictures[0],
+                                    (product?.pictures.isNotEmpty)
+                                ? CachedNetworkImage(
+                                    imageUrl: product?.pictures[0],
                                     width: double.infinity,
                                     fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Image.asset(
-                                                'assets/images/placeholder.jpg',
-                                                width: double.infinity,
-                                                fit: BoxFit.cover),
+                                    errorWidget: (context, error, stackTrace) =>
+                                        Image.asset(
+                                            'assets/images/placeholder.jpg',
+                                            width: double.infinity,
+                                            fit: BoxFit.cover),
                                   )
                                 : Container(),
                           ),
@@ -101,43 +100,53 @@ class _ClearanceCategoryState extends State<ClearanceCategory> {
                             children: [
                               Text(
                                 product.name,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Text(
-                                    "\$${product.discount}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "\$${product.price}",
-                                    style: const TextStyle(
-                                        decoration: TextDecoration.lineThrough,
-                                        color: Colors.red),
-                                  ),
-                                ],
+                              const SizedBox(height: 2),
+                              Text(
+                                product.shortDetails,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black38),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              SizedBox(
+                                width: screenSize.width / 2,
+                                child: Row(
+                                  children: [
+                                    const Flexible(
+                                      child: Text(
+                                        'Price:',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.green),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6.0),
+                                      child: Text(
+                                        "₹${product.price} ",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.green),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               const SizedBox(height: 4),
-                              Row(
-                                children: product.colors.map<Widget>((color) {
-                                  return Container(
-                                    margin: const EdgeInsets.only(right: 4),
-                                    width: 10,
-                                    height: 10,
-                                    decoration: BoxDecoration(
-                                      color: getColorFromName(color),
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.black, width: 0.5),
-                                    ),
-                                  );
-                                }).toList(),
+                              Text(
+                                "MOQ: ${product.stock.toString()}",
+                                style: const TextStyle(
+                                    color: Colors.red, fontSize: 10.5),
                               ),
                             ],
                           ),

@@ -33,4 +33,17 @@ class SharedPrefHelper {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
+
+  // Save Login Status
+  static Future<void> setLoginFormRequiredAndNotFilled(
+      bool loginFormRequiredNotFilled) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(
+        'loginFormRequiredNotFilled', loginFormRequiredNotFilled);
+  }
+
+  static Future<bool> getLoginFormRequiredAndNotFilled() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('loginFormRequiredNotFilled') ?? false;
+  }
 }

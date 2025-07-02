@@ -1,4 +1,9 @@
+import 'package:apparel_360/core/app_style/app_color.dart';
+import 'package:apparel_360/core/utils/app_helper.dart';
+import 'package:apparel_360/data/model/user_model.dart';
+import 'package:apparel_360/presentation/screens/dashboard/home-component/home_screen_search_bar.dart';
 import 'package:apparel_360/routes.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/network/base_client.dart';
@@ -18,6 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final repository = NetworkRepository(BaseClient());
   var senderId;
   late ChatBloc bloc;
+  TextEditingController searchController = TextEditingController();
+  List<dynamic> searchUserData = [];
+  List<dynamic> originalUserData = [];
 
   @override
   void initState() {
@@ -34,94 +42,160 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 12, bottom: 16),
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-                child: BlocBuilder<ChatBloc, ChatState>(
-                  bloc: bloc,
-                  builder: (context, state) {
-                    if (state is ChatLoadSuccessState) {
-                      _userData = state.userDetail;
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: AppColor.white,
+        body: Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 16),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 12.0, horizontal: 16.0),
+                child: HomeScreenSearchBar(
+                  clearSearch: () {
+                    searchController.text = '';
+                  },
+                  searchController: searchController,
+                  showClear: searchController.text.isNotEmpty,
+                  onChange: (value) {
+                    if (searchController.text.isEmpty) {
+                      bloc.add(
+                          SearchUserListEvent(filteredData: originalUserData));
+                    } else {
+                      searchUserData = _userData
+                          .where((item) =>
+                              item.name
+                                  .toLowerCase()
+                                  .contains(value.toString().toLowerCase()) ||
+                              item.mobileNo.contains(value.toString()))
+                          .toList();
+                      bloc.add(
+                          SearchUserListEvent(filteredData: searchUserData));
                     }
-                    if (state is UserListLoadingState) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (_userData.isEmpty) {
-                      return const Center(
-                        child: Text(
-                          "No dealer is assigned yet.",
-                          style: TextStyle(fontSize: 16, color: Colors.black),
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: _userData.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            highlightColor: Colors.transparent,
-                            onTap: () {
-                              _navigateToChatScreen(
-                                  _userData[index].mappedUserId,
-                                  senderId,
-                                  _userData[index].mobileNo,
-                                  _userData[index].name);
-                            },
-                            child: Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    const CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          "https://randomuser.me/api/portraits/men/1.jpg"),
-                                      radius: 30,
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            _userData[index].name,
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            _userData[index].mobileNo ?? "",
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    getStatusWidget(_userData[index].status),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        });
                   },
                 ),
               ),
-            )
-          ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                  child: BlocConsumer<ChatBloc, ChatState>(
+                    bloc: bloc,
+                    listener: (context, state) {
+                      if (state is ChatLoadSuccessState) {
+                        AppHelper.chatUserList = [];
+                        AppHelper.chatUserList = state.userDetail;
+                        _userData = state.userDetail;
+                        originalUserData = state.userDetail;
+                      }
+                      if (state is SearchUserListState) {
+                        _userData = state.filteredList;
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is UserListLoadingState) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (_userData.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            "No dealer is assigned yet.",
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: _userData.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              highlightColor: Colors.transparent,
+                              onTap: () {
+                                _navigateToChatScreen(
+                                    _userData[index].mappedUserId,
+                                    senderId,
+                                    _userData[index].mobileNo,
+                                    _userData[index].name);
+                              },
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        height: 50.0,
+                                        width: 50.0,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          child: CachedNetworkImage(
+                                            imageUrl: getProfileImage(
+                                                _userData[index]),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              getChatName(_userData[index]),
+                                              maxLines: 1,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              _userData[index].mobileNo ?? "",
+                                              maxLines: 1,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // getStatusWidget(_userData[index].status),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          });
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  String getChatName(UserDetail userDetail) {
+    if (userDetail.name?.isNotEmpty ?? false) {
+      return userDetail.name ?? '';
+    } else if (userDetail.shopName?.isNotEmpty ?? false) {
+      return userDetail.shopName ?? '';
+    } else {
+      return '';
+    }
+  }
+
+  String getProfileImage(UserDetail userDetail) {
+    String defaultImage =
+        'https://www.bootdey.com/img/Content/avatar/avatar7.png';
+    if (userDetail.profilePicPath?.isNotEmpty ?? false) {
+      return userDetail.profilePicPath ?? defaultImage;
+    } else {
+      return defaultImage;
+    }
   }
 
   Future<void> _navigateToChatScreen(String receiverId, String senderId,

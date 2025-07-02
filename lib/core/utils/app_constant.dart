@@ -1,5 +1,5 @@
 class AppConstant {
-  static const welcomeShubhMuhurat = "Welcome to Shubh Muhurat";
+  static const welcomeApparels360 = "Welcome to Apparels360";
   static const login = "Login";
   static const signUp = "SignUp";
   static const submit = "Submit";
@@ -11,7 +11,7 @@ class AppConstant {
   static const password = "Password";
   static const email = "Email";
   static const gstNo = "GST No.";
-  static const mobile = "Enter you mobile number to continue";
+  static const mobile = "Enter your Mobile Number to continue";
   static const fullName = "Full name";
   static const termAndCondition =
       "By signing up, you are agree with our Terms & Conditions";

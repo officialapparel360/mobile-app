@@ -1,4 +1,22 @@
+import 'dart:io';
+
+import 'package:apparel_360/core/app_style/app_color.dart';
+import 'package:apparel_360/core/app_style/app_text_style.dart';
+import 'package:apparel_360/core/network/repository.dart';
+import 'package:apparel_360/core/services/service_locator.dart';
+import 'package:apparel_360/core/utils/app_helper.dart';
+import 'package:apparel_360/core/utils/show_custom_toast.dart';
+import 'package:apparel_360/data/prefernce/shared_preference.dart';
+import 'package:apparel_360/presentation/component/button_control/ButtonControl.dart';
+import 'package:apparel_360/presentation/component/button_control/button_proprty.dart';
+import 'package:apparel_360/presentation/component/textbox_control/text_field_widget.dart';
+import 'package:apparel_360/presentation/component/textbox_control/textbox_property.dart';
+import 'package:apparel_360/presentation/screens/authentication/product_quantity_dropdown_widget.dart';
+import 'package:apparel_360/presentation/screens/dashboard/tab_bar.dart';
+import 'package:apparel_360/presentation/screens/profile/profile_pic_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DetailsInputScreen extends StatefulWidget {
   @override
@@ -13,104 +31,220 @@ class _DetailsInputScreenState extends State<DetailsInputScreen> {
   final _cityController = TextEditingController();
   final _pincodeController = TextEditingController();
 
-  bool isRetailer = false;
-  bool isWholesaler = false;
-  bool isTrader = false;
-
-  String? selectedQty;
-
-  final List<String> qtyOptions = [
-    'Upto 50 pcs',
-    '100-200 pcs',
-    '200-500 pcs',
-    'More than 500 pcs'
-  ];
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Text(title,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-    );
-  }
-
-  Widget _buildInputField(String label, TextEditingController controller,
-      {bool mandatory = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          filled: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        validator: (value) => mandatory && value!.isEmpty ? 'Required' : null,
-      ),
-    );
-  }
-
-  Widget _buildCheckboxTile(
-      String label, bool value, Function(bool?) onChanged) {
-    return CheckboxListTile(
-      title: Text(label),
-      value: value,
-      onChanged: onChanged,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    );
-  }
-
-  Widget _buildRadioOption(String label) {
-    return RadioListTile(
-      title: Text(label),
-      value: label,
-      groupValue: selectedQty,
-      onChanged: (value) => setState(() => selectedQty = value.toString()),
-    );
-  }
+  bool isScreenLoading = false;
+  String selectedQty = '50';
+  final List<String> qtyOptions = ['50', '100', '200', '300', '400', '500'];
+  String uploadedImage = '';
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Business Details"), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              _buildSectionTitle("Basic Details"),
-              _buildInputField("Name", _nameController, mandatory: true),
-              _buildInputField("Shop Name", _shopController, mandatory: true),
-              _buildInputField("GST No", _gstController),
-              _buildInputField("City", _cityController, mandatory: true),
-              _buildInputField("Pincode", _pincodeController),
-              _buildSectionTitle("Business Type"),
-              _buildCheckboxTile("Retailer", isRetailer,
-                  (val) => setState(() => isRetailer = val!)),
-              _buildCheckboxTile("Wholesaler", isWholesaler,
-                  (val) => setState(() => isWholesaler = val!)),
-              _buildCheckboxTile(
-                  "Trader", isTrader, (val) => setState(() => isTrader = val!)),
-              _buildSectionTitle("Purchase Quantity"),
-              ...qtyOptions.map(_buildRadioOption).toList(),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 14),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  textStyle:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+    var screenSize = MediaQuery.of(context).size;
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar:
+            AppBar(title: const Text("Business Details"), centerTitle: true),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: ProfilePicWidget(
+                      networkImage: uploadedImage,
+                      pickImage: () {
+                        pickImage();
+                      }),
                 ),
-                child: Text("Submit"),
-              )
-            ],
+                Text(
+                  'Your Name*',
+                  style: AppTextStyle.getFont14Style(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
+                  child: TextBoxComponent(
+                    controller: _nameController,
+                    textBoxProperty: TextBoxProperty(hintText: 'Name'),
+                  ),
+                ),
+                Text(
+                  'Shop Name*',
+                  style: AppTextStyle.getFont14Style(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
+                  child: TextBoxComponent(
+                    controller: _shopController,
+                    textBoxProperty: TextBoxProperty(hintText: 'Shop Name'),
+                  ),
+                ),
+                Text(
+                  'GST No',
+                  style: AppTextStyle.getFont14Style(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
+                  child: TextBoxComponent(
+                    controller: _gstController,
+                    textBoxProperty: TextBoxProperty(hintText: 'GST No'),
+                    inputFormatters: [LengthLimitingTextInputFormatter(15)],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: screenSize.width / 2 - 22,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'City',
+                            style: AppTextStyle.getFont14Style(),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 8.0, bottom: 12.0),
+                            child: TextBoxComponent(
+                              controller: _cityController,
+                              textBoxProperty: TextBoxProperty(
+                                hintText: 'City',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: screenSize.width / 2 - 22,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Pincode',
+                            style: AppTextStyle.getFont14Style(),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 8.0, bottom: 12.0),
+                            child: TextBoxComponent(
+                              controller: _pincodeController,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(6)
+                              ],
+                              textBoxProperty: TextBoxProperty(
+                                  hintText: 'Pincode',
+                                  inputType: TextInputType.number),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                Text(
+                  'Purchase quantity',
+                  style: AppTextStyle.getFont14Style(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
+                  child: ProductQuantityDropdownWidget(
+                    onChange: (changedValue) {
+                      setState(() {
+                        selectedQty = changedValue;
+                      });
+                    },
+                    qtyOptions: qtyOptions,
+                    selectedQty: selectedQty,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                isScreenLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ButtonControl(
+                        onTap: _submit,
+                        borderRadius: 14.0,
+                        textPadding: const EdgeInsets.symmetric(vertical: 14.0),
+                        buttonProperty: ButtonProperty(
+                          backgroundColor: AppColor.primaryColor,
+                          text: 'Submit',
+                          textColor: Colors.white,
+                        ),
+                      ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> pickImage() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+    AppHelper().showFullScreenLoader(context);
+    if (pickedFile != null) {
+      File imageFiles = File(pickedFile.path);
+      try {
+        final userId = await SharedPrefHelper.getUserId() ?? '';
+        var response = await getIt<NetworkRepository>()
+            .updateProfilePic(userId, imageFiles, imageFiles.path);
+        uploadedImage = response["data"]["profilePicPath"];
+        Navigator.pop(context);
+        setState(() {});
+      } catch (e) {
+        Navigator.pop(context);
+        CustomToast.showToast('Profile pic could not be updated!');
+      }
+    }
+  }
+
+  Future<void> _submit() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (!_formKey.currentState!.validate()) return;
+    if (_nameController.text.isEmpty || _shopController.text.isEmpty) {
+      CustomToast.showToast("Please fill all the the details!");
+      return;
+    }
+    setState(() {
+      isScreenLoading = true;
+    });
+
+    try {
+      final networkRepo = getIt<NetworkRepository>();
+      final userId = await SharedPrefHelper.getUserId();
+
+      final request = {
+        "userId": userId,
+        "name": _nameController.text.trim(),
+        "shopName": _shopController.text.trim(),
+        "profilePicPath": "",
+        "gstNo": _gstController.text.trim(),
+        "city": _cityController.text.trim(),
+        "pinCode": _pincodeController.text.trim(),
+        "purchaseQty": selectedQty.toString(),
+        "userType": "3"
+      };
+
+      var response = await networkRepo.updateProfileData(request);
+      if (response["type"] == "success") {
+        await SharedPrefHelper.setLoginFormRequiredAndNotFilled(false);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (builder) => const Dashboard()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+    } finally {
+      setState(() {
+        isScreenLoading = false;
+      });
+    }
   }
 }

@@ -31,3 +31,9 @@ class SignalRConnectionSuccess extends ChatState {
 
   SignalRConnectionSuccess({required this.isSignalRConnected});
 }
+
+class SearchUserListState extends ChatState {
+  final List<dynamic> filteredList;
+
+  SearchUserListState({required this.filteredList});
+}

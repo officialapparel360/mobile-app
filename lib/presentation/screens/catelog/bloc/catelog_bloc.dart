@@ -22,8 +22,8 @@ class CatelogBloc extends Bloc<CatelogEvent, CatelogState> {
       Future.delayed(Duration(seconds: 10));
       final data = await _networkRepository.getProductList();
       if (data["type"] == "success") {
-        List<Datum> productList = List<Datum>.from(
-            data["data"].map((x) => Datum.fromJson(x))
+        List<ProductData> productList = List<ProductData>.from(
+            data["data"].map((x) => ProductData.fromJson(x))
         );
         emit(CatelogLoadedState(productList));
       }

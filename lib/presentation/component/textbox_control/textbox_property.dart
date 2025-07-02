@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
 class TextBoxProperty {
-  String label;
   TextStyle? textStyle;
   TextStyle? hintStyle;
   TextInputType? inputType;
   int? maxLength;
+  String? hintText;
 
-
-  TextBoxProperty({
-    required this.label,
-    this.textStyle,
-    this.hintStyle,
-    this.inputType,
-    this.maxLength,
-  });
+  TextBoxProperty(
+      {this.textStyle,
+      this.hintStyle,
+      this.inputType,
+      this.maxLength,
+      this.hintText});
 }

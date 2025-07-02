@@ -1,9 +1,15 @@
+import 'dart:io';
+import 'package:apparel_360/core/utils/app_helper.dart';
+import 'package:apparel_360/core/utils/show_custom_toast.dart';
 import 'package:apparel_360/data/model/profile_response_model.dart';
 import 'package:apparel_360/data/prefernce/shared_preference.dart';
 import 'package:apparel_360/presentation/screens/authentication/login_screen.dart';
+import 'package:apparel_360/presentation/screens/profile/card_widget.dart';
 import 'package:apparel_360/presentation/screens/profile/profile_bloc.dart';
+import 'package:apparel_360/presentation/screens/profile/profile_pic_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
@@ -17,40 +23,25 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late ProfileBloc bloc;
   ProfileData profileData = ProfileData();
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+  String uploadedImage = '';
 
   @override
   void initState() {
     super.initState();
+    fetchProfileData();
+  }
+
+  fetchProfileData() async {
     bloc = ProfileBloc();
-    bloc.add(GetProfileDataEvent());
-  }
-
-  Widget _buildDetailCard(String title, String value) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(value.isEmpty ? "N/A" : value),
-      ),
-    );
-  }
-
-  Widget _buildTag(String tag) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      margin: EdgeInsets.only(right: 8),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.blueAccent),
-      ),
-      child: Text(tag, style: TextStyle(color: Colors.blueAccent)),
-    );
+    var userId = await SharedPrefHelper.getUserId();
+    bloc.add(GetProfileDataEvent(userId: userId!));
   }
 
   _logout(BuildContext context) async {
-    final shouldLogout = await _showLogoutConfirmationDialog(context);
+    final shouldLogout =
+        await AppHelper().showLogoutConfirmationDialog(context);
     if (shouldLogout != true) return;
 
     await SharedPrefHelper.setLoginStatus(false);
@@ -61,36 +52,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<bool?> _showLogoutConfirmationDialog(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Logout'),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final roles = ['Retailer', 'Wholesaler', 'Trader'];
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile Summary"),
+        title: const Text("Profile Summary"),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             tooltip: 'Logout',
             onPressed: () => _logout(context),
           ),
@@ -101,25 +70,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
         listener: (context, state) {
           if (state is ProfileDataSuccess) {
             profileData = state.profileData;
+          } else if (state is ProfilePicUpdateSuccess) {
+            Navigator.pop(context);
+            uploadedImage = state.uploadedImage;
+          } else if (state is ProfilePicUpdateFail) {
+            Navigator.pop(context);
+            CustomToast.showToast(state.errorMessage);
           }
         },
         builder: (context, state) {
-          return Padding(
-            padding: EdgeInsets.all(16),
-            child: ListView(
-              children: [
-                _buildDetailCard("Name", profileData.name ?? ''),
-                _buildDetailCard("Shop Name", profileData.shopName ?? ''),
-                _buildDetailCard("GST No", profileData.gstNo ?? ''),
-                _buildDetailCard("City", profileData.city ?? ''),
-                _buildDetailCard("Pincode", profileData.pinCode ?? ''),
-                _buildDetailCard(
-                    "Purchase Quantity", profileData.purchaseQty ?? ''),
-              ],
+          if (state is ProfileLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    ProfilePicWidget(
+                        networkImage: uploadedImage.isNotEmpty
+                            ? uploadedImage
+                            : profileData.profilePicPath,
+                        pickImage: () {
+                          pickImage();
+                        },
+                        imageFile: _imageFile),
+                    CardWidget(title: "Name", value: profileData.name ?? ''),
+                    CardWidget(
+                        title: "Shop Name", value: profileData.shopName ?? ''),
+                    CardWidget(title: "GST No", value: profileData.gstNo ?? ''),
+                    CardWidget(title: "City", value: profileData.city ?? ''),
+                    CardWidget(
+                        title: "Pincode", value: profileData.pinCode ?? ''),
+                    CardWidget(
+                        title: "Purchase Quantity",
+                        value: profileData.purchaseQty ?? ''),
+                    const SizedBox(
+                      height: 40.0,
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         },
       ),
     );
+  }
+
+  Future<void> pickImage() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+    AppHelper().showFullScreenLoader(context);
+    if (pickedFile != null) {
+      bloc.add(UpdateProfilePicEvent(imageFile: File(pickedFile.path)));
+    }
   }
 }

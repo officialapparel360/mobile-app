@@ -1,9 +1,7 @@
+import 'package:apparel_360/core/app_style/app_text_style.dart';
 import 'package:apparel_360/presentation/screens/catelog/catelog.dart';
 import 'package:apparel_360/presentation/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
-
-import '../../../data/prefernce/shared_preference.dart';
-import '../authentication/login_screen.dart';
 import '../catelog/clearance.dart';
 import 'home-component/home_screen.dart';
 
@@ -33,24 +31,27 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: const [
-            Text('Appreal360'),
+          children: [
+            Text(
+              'Apparels360',
+              style: AppTextStyle.getFont22Style(fontWeight: FontWeight.w600),
+            ),
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // Add your onPressed code here!
-            },
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.notifications),
+          //   onPressed: () {
+          //     // Add your onPressed code here!
+          //   },
+          // ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (builder) => ProfileScreen()));
+                  MaterialPageRoute(builder: (builder) => const ProfileScreen()));
             },
           ),
         ],
@@ -61,7 +62,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
               child: Text("Chat"),
             ),
             Tab(
-              child: Text("Catalogue"),
+              child: Text("Catalog"),
             ),
             Tab(
               child: Text("Clearance"),

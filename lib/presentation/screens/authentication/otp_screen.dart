@@ -4,6 +4,7 @@ import 'package:apparel_360/core/network/repository.dart';
 import 'package:apparel_360/core/utils/app_constant.dart';
 import 'package:apparel_360/presentation/component/button_control/ButtonControl.dart';
 import 'package:apparel_360/presentation/component/button_control/button_proprty.dart';
+import 'package:apparel_360/presentation/screens/authentication/detail_input_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
@@ -52,30 +53,37 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(title: Text("")),
+      appBar: AppBar(
+        title: const Text(
+          "OTP Verification",
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColor.white,
+      ),
+      backgroundColor: AppColor.white,
       body: Center(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 28),
-              child: Text(
-                "OTP Verification",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             const Text(
               "Enter 6-digit OTP sent to your phone",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 20),
-            Pinput(
-              length: 6,
-              controller: _otpController,
-              keyboardType: TextInputType.number,
-              onCompleted: (pin) => _verifyOtp(),
+            SizedBox(
+              width: screenSize.width - 62,
+              height: 50.0,
+              child: Pinput(
+                length: 6,
+                controller: _otpController,
+                keyboardType: TextInputType.number,
+                onCompleted: (pin) => _verifyOtp(),
+              ),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -128,11 +136,25 @@ class _OtpScreenState extends State<OtpScreen> {
         var userId = await SharedPrefHelper.getUserId();
         print("Is Logged In: $isLoggedIn === $userId");
 
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (builder) => Dashboard()),
-          (route) => false,
-        );
+        data["data"]["isFirstLogin"];
+        if (data["data"]["isFirstLogin"] == 0 && data["data"]["roleID"] == 3) {
+          await SharedPrefHelper.setLoginFormRequiredAndNotFilled(true);
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (builder) => DetailsInputScreen()),
+              (route) => false,
+            );
+          }
+        } else {
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (builder) => Dashboard()),
+              (route) => false,
+            );
+          }
+        }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

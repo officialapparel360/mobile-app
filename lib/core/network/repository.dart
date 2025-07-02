@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:apparel_360/core/network/network_call_interface.dart';
 
 class NetworkRepository {
@@ -36,5 +38,16 @@ class NetworkRepository {
   Future<dynamic> getProfileData(Map<String, dynamic> userId) async {
     return await networkCallInterface.get('Account/GetUserProfileByUserId',
         data: userId);
+  }
+
+  Future<dynamic> updateProfileData(Map<String, dynamic> userData) async {
+    return await networkCallInterface.post(
+        'Account/UpdateUserProfile', userData);
+  }
+
+  Future<dynamic> updateProfilePic(
+      String userId, File profileImage, String picturePath) async {
+    return await networkCallInterface.uploadProfilePicture(
+        userId: userId, picturePath: picturePath, profileImage: profileImage);
   }
 }

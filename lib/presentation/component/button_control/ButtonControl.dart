@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'button_proprty.dart';
 
 class ButtonControl extends StatelessWidget {
-  const ButtonControl({
-    super.key,
-    required this.buttonProperty,
-    required this.onTap,
-    this.textPadding,
-  });
+  const ButtonControl(
+      {super.key,
+      required this.buttonProperty,
+      required this.onTap,
+      this.textPadding,
+      this.borderRadius = 20.0});
 
   final ButtonProperty buttonProperty;
   final VoidCallback onTap;
   final EdgeInsetsGeometry? textPadding;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class ButtonControl extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             backgroundColor: buttonProperty.backgroundColor,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0))),
+                borderRadius: BorderRadius.circular(borderRadius))),
         child: Padding(
           padding: textPadding ?? EdgeInsets.zero,
           child: Text(

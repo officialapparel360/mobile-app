@@ -107,6 +107,7 @@ class _ChatScreenState extends State<ChatScreen> {
       children: [
         ChatTopViewWidget(
           topDisplayField: topDisplayField,
+          chatUserId: widget.receiverUserID,
         ),
         Expanded(
             child: ChatBodyWidget(

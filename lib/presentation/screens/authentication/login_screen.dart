@@ -24,6 +24,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _phoneControl = TextEditingController();
   late LoginBloc bloc;
+  bool isOtpSent = false;
 
   @override
   void initState() {
@@ -39,16 +40,18 @@ class _LoginScreenState extends State<LoginScreen> {
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
+          backgroundColor: AppColor.white,
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: BlocListener<LoginBloc, LoginState>(
+              child: BlocConsumer<LoginBloc, LoginState>(
                 bloc: bloc,
                 listener: (context, state) {
                   if (state is GetOtpLoadingState) {
-                    AppHelper().showFullScreenLoader(context);
+                    isOtpSent = true;
                   } else if (state is GetOtpSuccessState) {
-                    Navigator.pushReplacement(
+                    isOtpSent = false;
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => OtpScreen(
@@ -59,89 +62,113 @@ class _LoginScreenState extends State<LoginScreen> {
                     Fluttertoast.showToast(msg: state.errorMessage);
                   }
                 },
-                child: Stack(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          height: screenSize.height * 0.5,
-                          width: screenSize.width,
-                          child: Image.asset(
-                            AssetsPath.loginImage,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 24.0, top: 16),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              AppConstant.mobile,
-                              style: TextStyle(
-                                  color: AppColor.black600,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 20),
-                            ),
-                          ),
-                        ),
-                        Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.0),
-                                border: Border.all(color: Colors.grey)),
-                            child: TextBoxComponent(
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(10)
-                              ],
-                              textBoxProperty: TextBoxProperty(
-                                label: "",
-                                textStyle: TextStyle(
-                                    color: AppColor.black700, fontSize: 18.0),
-                                inputType: TextInputType.number,
+                builder: (context, state) {
+                  return Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 140.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: screenSize.width * 0.8,
+                              width: screenSize.width,
+                              child: Image.asset(
+                                AssetsPath.loginImage,
                               ),
-                              onChanged: (value) {
-                                _phoneControl.text = value.toString();
-                                if (value.length == 10) {
-                                  FocusScope.of(context)
-                                      .unfocus(); // ✅ close keyboard
-                                }
-                              },
-                            )),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                          child: ButtonControl(
-                            onTap: () async {
-                              postLoginData(_phoneControl.text);
-                            },
-                            textPadding:
-                                const EdgeInsets.symmetric(vertical: 12.0),
-                            buttonProperty: ButtonProperty(
-                              backgroundColor: AppColor.primaryColor,
-                              buttonSize: Size(screenSize.width, 50.0),
-                              text: AppConstant.submit,
-                              textColor: Colors.white,
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: SizedBox(
-                            width: screenSize.width * 0.8,
-                            child: Text(
-                              AppConstant.termAndCondition,
-                              textAlign: TextAlign.center,
+                            Text(
+                              AppConstant.welcomeApparels360,
                               style: TextStyle(
-                                  color: AppColor.black700,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14),
+                                  color: AppColor.black,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 24),
                             ),
-                          ),
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 24.0, top: 16),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  AppConstant.mobile,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 18.0),
+                                  child: SizedBox(
+                                      width: screenSize.width / 1.8,
+                                      child: TextBoxComponent(
+                                        inputFormatters: [
+                                          LengthLimitingTextInputFormatter(10)
+                                        ],
+                                        textBoxProperty: TextBoxProperty(
+                                          hintText: 'eg. 9876543210',
+                                          hintStyle: TextStyle(
+                                              color: AppColor.grey,
+                                              fontSize: 14.0),
+                                          textStyle: TextStyle(
+                                              color: AppColor.black700,
+                                              fontSize: 16.0),
+                                          inputType: TextInputType.number,
+                                        ),
+                                        onChanged: (value) {
+                                          _phoneControl.text = value.toString();
+                                          if (value.length == 10) {
+                                            FocusScope.of(context)
+                                                .unfocus(); // ✅ close keyboard
+                                          }
+                                        },
+                                      )),
+                                ),
+                                isOtpSent
+                                    ? Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColor.primaryColor,
+                                        ),
+                                      )
+                                    : ButtonControl(
+                                        onTap: () async {
+                                          postLoginData(_phoneControl.text);
+                                        },
+                                        borderRadius: 14.0,
+                                        textPadding: const EdgeInsets.symmetric(
+                                            vertical: 14.0),
+                                        buttonProperty: ButtonProperty(
+                                          backgroundColor:
+                                              AppColor.primaryColor,
+                                          text: 'Get OTP',
+                                          textColor: Colors.white,
+                                        ),
+                                      ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 16.0, top: 30.0),
+                              child: SizedBox(
+                                width: screenSize.width * 0.8,
+                                child: Text(
+                                  AppConstant.termAndCondition,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: AppColor.black700,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -151,7 +178,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   postLoginData(String mobileNo) {
-    if (_phoneControl.text.length == 10 &&
+    if (_phoneControl.text.isNotEmpty &&
+        _phoneControl.text.length == 10 &&
         RegExp(r'^[6-9]\d{9}$').hasMatch(_phoneControl.text)) {
       bloc.add(GetOtpEvent(mobileNumber: mobileNo));
     } else {
